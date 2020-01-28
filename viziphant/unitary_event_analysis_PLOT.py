@@ -27,7 +27,14 @@ plot_params_default = {
     'lw': 0.5,
     # y limit for the surprise
     'S_ylim': (-3, 3),
-
+    #major tick width on the time scale
+    'major_tick_width_time': 200,
+    #number n of minor ticks between major ones on the time scale:
+    'number_minor_ticks_time': 1,
+    #boolean: weather vertical lines at the major ticks of the x-axis will be added
+    'boolean_vertical_lines': False,
+    # color of the vertical lines at the major ticks of the x-axis
+    'color_vertical_lines': "r"
 }
 
 plot_markers_default = {
@@ -263,9 +270,15 @@ def plot_spike_events(data, window_size, window_step, n_neurons, plot_params_use
     ax0.set_xlim(0, (max(t_winpos) + window_size).rescale('ms').magnitude) #better minimum
     ax0.set_ylim(0, (tr + 2) * (n + 1) + 1)
 
-    ax0.xaxis.set_major_locator(MultipleLocator(200))
+    if(plot_params['boolean_vertical_lines']):
+        x_line_coords = MultipleLocator(plot_params['major_tick_width_time']).tick_values(t_start.magnitude, t_stop.magnitude)
+        for xc in x_line_coords:
+            ax0.axvline(xc, lw=plot_params['lw'],color=plot_params['color_vertical_lines'])
+
+    ax0.xaxis.set_major_locator(MultipleLocator(plot_params['major_tick_width_time']) )
     ax0.xaxis.set_major_formatter(FormatStrFormatter('%d'))
-    ax0.xaxis.set_minor_locator(MultipleLocator(100))
+    ax0.xaxis.set_minor_locator(MultipleLocator(plot_params['major_tick_width_time']/
+                                                (plot_params['number_minor_ticks_time']+1)))
     #set yaxis
     yticks_list = []
     for yt1 in range(1, n_neurons * num_tr, num_tr + 1):
@@ -388,9 +401,15 @@ def plot_spike_rates(data, joint_suprise_dict, window_size, window_step, n_neuro
     max_val_psth = 40
     ax1.set_ylim(0, max_val_psth)
 
-    ax1.xaxis.set_major_locator(MultipleLocator(200))
+    if(plot_params['boolean_vertical_lines']):
+        x_line_coords = MultipleLocator(plot_params['major_tick_width_time']).tick_values(t_start.magnitude, t_stop.magnitude)
+        for xc in x_line_coords:
+            ax1.axvline(xc, lw=plot_params['lw'],color=plot_params['color_vertical_lines'])
+
+    ax1.xaxis.set_major_locator(MultipleLocator(plot_params['major_tick_width_time']) )
     ax1.xaxis.set_major_formatter(FormatStrFormatter('%d'))
-    ax1.xaxis.set_minor_locator(MultipleLocator(100))
+    ax1.xaxis.set_minor_locator(MultipleLocator(plot_params['major_tick_width_time']/
+                                                (plot_params['number_minor_ticks_time']+1)))
     ax1.set_yticks([0, int(max_val_psth / 2), int(max_val_psth)])
 
     ax1.legend(bbox_to_anchor=(1, 1), fancybox=True, shadow=True)
@@ -504,9 +523,15 @@ def plot_coincidence_events(data, joint_suprise_dict, binsize, window_size, wind
     ax2.set_ylim(0, (tr + 2) * (n + 1) + 1)
     ax2.set_xlim(0, (max(t_winpos) + window_size).rescale('ms').magnitude)
 
-    ax2.xaxis.set_major_locator(MultipleLocator(200))
+    if(plot_params['boolean_vertical_lines']):
+        x_line_coords = MultipleLocator(plot_params['major_tick_width_time']).tick_values(t_start.magnitude, t_stop.magnitude)
+        for xc in x_line_coords:
+            ax2.axvline(xc, lw=plot_params['lw'],color=plot_params['color_vertical_lines'])
+
+    ax2.xaxis.set_major_locator(MultipleLocator(plot_params['major_tick_width_time']) )
     ax2.xaxis.set_major_formatter(FormatStrFormatter('%d'))
-    ax2.xaxis.set_minor_locator(MultipleLocator(100))
+    ax2.xaxis.set_minor_locator(MultipleLocator(plot_params['major_tick_width_time']/
+                                                (plot_params['number_minor_ticks_time']+1)))
     # set yaxis
     yticks_list = []
     for yt1 in range(1, n_neurons * num_tr, num_tr + 1):
@@ -630,9 +655,15 @@ def plot_coincidence_rates(data, joint_suprise_dict, window_size, window_step, n
              label='expected', lw=plot_params['lw'], color=plot_markers['data_markercolor'][1])
     ax3.set_xlim(0, (max(t_winpos) + window_size).rescale('ms').magnitude)
 
-    ax3.xaxis.set_major_locator(MultipleLocator(200))
+    if(plot_params['boolean_vertical_lines']):
+        x_line_coords = MultipleLocator(plot_params['major_tick_width_time']).tick_values(t_start.magnitude, t_stop.magnitude)
+        for xc in x_line_coords:
+            ax3.axvline(xc, lw=plot_params['lw'],color=plot_params['color_vertical_lines'])
+
+    ax3.xaxis.set_major_locator(MultipleLocator(plot_params['major_tick_width_time']) )
     ax3.xaxis.set_major_formatter(FormatStrFormatter('%d'))
-    ax3.xaxis.set_minor_locator(MultipleLocator(100))
+    ax3.xaxis.set_minor_locator(MultipleLocator(plot_params['major_tick_width_time']/
+                                                (plot_params['number_minor_ticks_time']+1)))
     y_ticks = ax3.get_ylim()
     ax3.set_yticks([0, y_ticks[1] / 2, y_ticks[1]])
 
@@ -740,10 +771,16 @@ def plot_statistical_significance(data, joint_suprise_dict, joint_suprise_signif
     ax4.axhline(-joint_suprise_significance, ls='-', color=plot_markers['data_markercolor'][2])
     ax4.text(t_winpos[30], joint_suprise_significance + 0.3, '$\\alpha +$', color=plot_markers['data_markercolor'][1])
     ax4.text(t_winpos[30], -joint_suprise_significance - 0.5, '$\\alpha -$', color=plot_markers['data_markercolor'][2])
+    
+    if(plot_params['boolean_vertical_lines']):
+        x_line_coords = MultipleLocator(plot_params['major_tick_width_time']).tick_values(t_start.magnitude, t_stop.magnitude)
+        for xc in x_line_coords:
+            ax4.axvline(xc, lw=plot_params['lw'],color=plot_params['color_vertical_lines'])
 
-    ax4.xaxis.set_major_locator(MultipleLocator(200))
+    ax4.xaxis.set_major_locator(MultipleLocator(plot_params['major_tick_width_time']) )
     ax4.xaxis.set_major_formatter(FormatStrFormatter('%d'))
-    ax4.xaxis.set_minor_locator(MultipleLocator(100))
+    ax4.xaxis.set_minor_locator(MultipleLocator(plot_params['major_tick_width_time']/
+                                                (plot_params['number_minor_ticks_time']+1)))
     ax4.set_yticks([ue.jointJ(0.99), ue.jointJ(0.5), ue.jointJ(0.01)])
 
     ax4.set_xlabel('Time [ms]', fontsize=plot_params['fsize'])
@@ -827,7 +864,7 @@ def plot_unitary_events(data, joint_suprise_dict, joint_suprise_significance, bi
 
     t_start = data[0][0].t_start
     t_stop = data[0][0].t_stop
-    t_winpos = ue._winpos(t_start, t_stop, window_size, window_step)                                                                                                              #joint_suprise_significance war NotANumber;; vorher joint_suprise_significance = ue.jointJ(sig_level) ,d.h. doppelter ue.jointJ aufruf und deshalb war joint_suprise_significance NAN
+    t_winpos = ue._winpos(t_start, t_stop, window_size, window_step)
     num_tr = len(data)
     ls = '-'
     alpha = 0.5
@@ -873,13 +910,15 @@ def plot_unitary_events(data, joint_suprise_dict, joint_suprise_significance, bi
     ax5.set_xlim(0, (max(t_winpos) + window_size).rescale('ms').magnitude)
     ax5.set_ylim(0, (tr + 2) * (n + 1) + 1)
 
-    x_line_coords = MultipleLocator(200).tick_values(0, 2200)
-    for xc in x_line_coords:
-        ax5.axvline(xc, lw=plot_params['lw'],color='g')
+    if(plot_params['boolean_vertical_lines']):
+        x_line_coords = MultipleLocator(plot_params['major_tick_width_time']).tick_values(t_start.magnitude, t_stop.magnitude)
+        for xc in x_line_coords:
+            ax5.axvline(xc, lw=plot_params['lw'],color=plot_params['color_vertical_lines'])
 
-    ax5.xaxis.set_major_locator(MultipleLocator(200))
+    ax5.xaxis.set_major_locator(MultipleLocator(plot_params['major_tick_width_time']) )
     ax5.xaxis.set_major_formatter(FormatStrFormatter('%d'))
-    ax5.xaxis.set_minor_locator(MultipleLocator(100))
+    ax5.xaxis.set_minor_locator(MultipleLocator(plot_params['major_tick_width_time']/
+                                                (plot_params['number_minor_ticks_time']+1)))
     # set yaxis
     yticks_list = []
     for yt1 in range(1, n_neurons * num_tr, num_tr + 1):
