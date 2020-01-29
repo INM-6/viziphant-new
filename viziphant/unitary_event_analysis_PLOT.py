@@ -174,7 +174,6 @@ def plot_unitary_event_full_analysis(data, joint_suprise_dict, joint_suprise_sig
 
     plot_unitary_events(data, joint_suprise_dict, joint_suprise_significance, binsize, window_size, window_step,
                         n_neurons, plot_params_user, plot_markers_user[5], position[5])
-    return None
 
 
 def plot_spike_events(data, window_size, window_step, n_neurons, plot_params_user, plot_markers_user, position):
@@ -307,8 +306,6 @@ def plot_spike_events(data, window_size, window_step, n_neurons, plot_params_use
     ax0.set_xlabel('Time [ms]', fontsize=plot_params['fsize'])
     ax0.set_ylabel('Trial', fontsize=plot_params['fsize'])
 
-    return None
-
 
 def plot_spike_rates(data, joint_suprise_dict, window_size, window_step, n_neurons, plot_params_user,
                      plot_markers_user, position):
@@ -415,8 +412,6 @@ def plot_spike_rates(data, joint_suprise_dict, window_size, window_step, n_neuro
     ax1.legend(bbox_to_anchor=(1, 1), fancybox=True, shadow=True)
     ax1.set_xlabel('Time [ms]', fontsize=plot_params['fsize'])
     ax1.set_ylabel('(1/s)', fontsize=plot_params['fsize'])
-
-    return None
 
 
 def plot_coincidence_events(data, joint_suprise_dict, binsize, window_size, window_step, n_neurons,
@@ -549,14 +544,12 @@ def plot_coincidence_events(data, joint_suprise_dict, binsize, window_size, wind
     hilfsListe = yticks_labels_list
     for i in range(n_neurons - 1):
         yticks_labels_list += hilfsListe
-    # print(yticks_list)
     ax2.set_yticks(yticks_list)
     ax2.set_yticklabels(yticks_labels_list, fontsize=plot_params['fsize'])
 
     ax2.set_xlabel('Time [ms]', fontsize=plot_params['fsize'])
     ax2.set_ylabel('Trial', fontsize=plot_params['fsize'])
 
-    return None
 
 
 def plot_coincidence_rates(data, joint_suprise_dict, window_size, window_step, n_neurons, plot_params_user,
@@ -671,8 +664,6 @@ def plot_coincidence_rates(data, joint_suprise_dict, window_size, window_step, n
     ax3.set_xlabel('Time [ms]', fontsize=plot_params['fsize'])
     ax3.set_ylabel('(1/s)', fontsize=plot_params['fsize'])
 
-    return None
-
 
 def plot_statistical_significance(data, joint_suprise_dict, joint_suprise_significance, window_size, window_step, n_neurons,
                                   plot_params_user, plot_markers_user, position):
@@ -785,8 +776,6 @@ def plot_statistical_significance(data, joint_suprise_dict, joint_suprise_signif
 
     ax4.set_xlabel('Time [ms]', fontsize=plot_params['fsize'])
     ax4.set_yticklabels([alpha+0.5, alpha, alpha-0.5])
-
-    return None
 
 
 def plot_unitary_events(data, joint_suprise_dict, joint_suprise_significance, binsize, window_size, window_step,
@@ -943,10 +932,8 @@ def plot_unitary_events(data, joint_suprise_dict, joint_suprise_significance, bi
     ax5.set_xlabel('Time [ms]', fontsize=plot_params['fsize'])
     ax5.set_ylabel('Trial', fontsize=plot_params['fsize'])
 
-    return None
 
-
-def _checkung_user_entries_of_plot_UE(data, joint_suprise_dict, joint_suprise_significance, binsize, window_size, window_step,
+def _checking_user_entries_of_plot_UE(data, joint_suprise_dict, joint_suprise_significance, binsize, window_size, window_step,
                                       pattern_hash, n_neurons, plot_params_user, plot_markers_user, position):
     if (type(data) != list and type(data) != numpy.ndarray): # sollen weiter Typen erlaubt sein???
         raise TypeError('data must be a list (of spiketrains)')
