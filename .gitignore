@@ -130,3 +130,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# manually created target images for tests
+viziphant/tests/target_images/
+*.h5
+
+# ignored folders
+ignored/

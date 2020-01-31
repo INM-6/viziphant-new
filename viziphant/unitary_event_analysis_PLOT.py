@@ -8,6 +8,7 @@ from matplotlib.ticker import (MultipleLocator, FormatStrFormatter,
 import neo
 import elephant.unitary_event_analysis as ue
 
+#TODO: line format
 
 #plot_params_default = dictionary { keys : values }
 plot_params_default = {
@@ -198,9 +199,9 @@ def plot_spike_events(data, window_size, window_step, n_neurons, plot_params_use
         plotting parameters from the user
     plot_markers_user: list of dictionaries
         marker properties from the user
-    position: list of position-tupels
-        (posSpikeEvents(c,r,i), posSpikeRates(c,r,i), posCoincidenceEvents(c,r,i), posCoincidenceRates(c,r,i),
-        posStatisticalSignificance(c,r,i), posUnitaryEvents(c,r,i))
+TODO: just one tupel neede, same for the other singel function calls
+
+    position: position-tupel
         pos is a three integer-tupel, where the first integer is the number of rows,
         the second the number of columns, and the third the index of the subplot
 
@@ -330,9 +331,7 @@ def plot_spike_rates(data, joint_suprise_dict, window_size, window_step, n_neuro
         plotting parameters from the user
     plot_markers_user: list of dictionaries
         marker properties from the user
-    position: list of position-tupels
-        (posSpikeEvents(c,r,i), posSpikeRates(c,r,i), posCoincidenceEvents(c,r,i), posCoincidenceRates(c,r,i),
-        posStatisticalSignificance(c,r,i), posUnitaryEvents(c,r,i))
+    position: position-tupel
         pos is a three integer-tupel, where the first integer is the number of rows,
         the second the number of columns, and the third the index of the subplot
 
@@ -440,9 +439,7 @@ def plot_coincidence_events(data, joint_suprise_dict, binsize, window_size, wind
         plotting parameters from the user
     plot_markers_user: list of dictionaries
         marker properties from the user
-    position: list of position-tupels
-        (posSpikeEvents(c,r,i), posSpikeRates(c,r,i), posCoincidenceEvents(c,r,i), posCoincidenceRates(c,r,i),
-        posStatisticalSignificance(c,r,i), posUnitaryEvents(c,r,i))
+    position: position-tupel
         pos is a three integer-tupel, where the first integer is the number of rows,
         the second the number of columns, and the third the index of the subplot
 
@@ -577,9 +574,7 @@ def plot_coincidence_rates(data, joint_suprise_dict, window_size, window_step, n
         plotting parameters from the user
     plot_markers_user: list of dictionaries
         marker properties from the user
-    position: list of position-tupels
-        (posSpikeEvents(c,r,i), posSpikeRates(c,r,i), posCoincidenceEvents(c,r,i), posCoincidenceRates(c,r,i),
-        posStatisticalSignificance(c,r,i), posUnitaryEvents(c,r,i))
+    position: position-tupel
         pos is a three integer-tupel, where the first integer is the number of rows,
         the second the number of columns, and the third the index of the subplot
 
@@ -690,9 +685,7 @@ def plot_statistical_significance(data, joint_suprise_dict, joint_suprise_signif
         plotting parameters from the user
     plot_markers_user: list of dictionaries
         marker properties from the user
-    position: list of position-tupels
-        (posSpikeEvents(c,r,i), posSpikeRates(c,r,i), posCoincidenceEvents(c,r,i), posCoincidenceRates(c,r,i),
-        posStatisticalSignificance(c,r,i), posUnitaryEvents(c,r,i))
+    position: position-tupel
         pos is a three integer-tupel, where the first integer is the number of rows,
         the second the number of columns, and the third the index of the subplot
 
@@ -805,9 +798,7 @@ def plot_unitary_events(data, joint_suprise_dict, joint_suprise_significance, bi
         plotting parameters from the user
     plot_markers_user: list of dictionaries
         marker properties from the user
-    position: list of position-tupels
-        (posSpikeEvents(c,r,i), posSpikeRates(c,r,i), posCoincidenceEvents(c,r,i), posCoincidenceRates(c,r,i),
-        posStatisticalSignificance(c,r,i), posUnitaryEvents(c,r,i))
+    position: position-tupel
         pos is a three integer-tupel, where the first integer is the number of rows,
         the second the number of columns, and the third the index of the subplot
 
