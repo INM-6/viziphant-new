@@ -62,9 +62,10 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
         cls.target_image1_plot_UE_full_analysis.savefig(
             "/home/kramer/Documents/Studium Angewandte Mathematik und "
             "Informatik/INM6/PycharmProjects/viziphant-new/"
-            "viziphant/tests/target_images/"
+            "viziphant/unit_tests/target_images/"
             "target_image1_plot_UE_full_analysis.png")
-        cls.path_target_image1__plot_UE_full_analysis = "target_images/target_image1_plot_UE_full_analysis.png"
+        cls.path_target_image1__plot_UE_full_analysis = "target_images/" \
+            "target_image1_plot_UE_full_analysis.png"
 
         # create 2.figure with 1 subplot with plot_spike_events():
         cls.target_image2_plot_spike_events = plt.figure("2", figsize=(20, 20))
@@ -74,9 +75,10 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
             position=(1, 1, 1))
         cls.target_image2_plot_spike_events.savefig(
             "/home/kramer/Documents/Studium Angewandte Mathematik und "
-            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/tests/"
-            "target_images/target_image2_plot_spike_events.png")
-        cls.path_target_image2_plot_spike_events = "target_images/target_image2_plot_spike_events.png"
+            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/"
+            "unit_tests/target_images/target_image2_plot_spike_events.png")
+        cls.path_target_image2_plot_spike_events = "target_images/" \
+            "target_image2_plot_spike_events.png"
 
         # create 3.figure with 1 subplot with plot_spike_rates():
         cls.target_image3_plot_spike_rates = plt.figure("3", figsize=(20, 20))
@@ -88,9 +90,10 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
             position=(1, 1, 1))
         cls.target_image3_plot_spike_rates.savefig(
             "/home/kramer/Documents/Studium Angewandte Mathematik und "
-            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/tests/"
-            "target_images/target_image3_plot_spike_rates.png")
-        cls.path_target_image3_plot_spike_rates = "target_images/target_image3_plot_spike_rates.png"
+            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/"
+            "unit_tests/target_images/target_image3_plot_spike_rates.png")
+        cls.path_target_image3_plot_spike_rates = "target_images/" \
+            "target_image3_plot_spike_rates.png"
 
         # create 4.figure with 1 subplot with plot_coincidence_events():
         cls.target_image4_plot_coincidence_events = plt.figure(
@@ -102,9 +105,11 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
             position=(1, 1, 1))
         cls.target_image4_plot_coincidence_events.savefig(
             "/home/kramer/Documents/Studium Angewandte Mathematik und "
-            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/tests/"
-            "target_images/target_image4_plot_coincidence_events.png")
-        cls.path_target_image4_plot_coincidence_events = "target_images/target_image4_plot_coincidence_events.png"
+            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/"
+            "unit_tests/target_images/target_image4_plot_coincidence"
+            "_events.png")
+        cls.path_target_image4_plot_coincidence_events = "target_images/" \
+            "target_image4_plot_coincidence_events.png"
 
         # create 5.figure with 1 subplot with plot_coincidence_rates():
         cls.target_image5_plot_coincidences_rates = plt.figure(
@@ -117,9 +122,11 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
             position=(1, 1, 1))
         cls.target_image5_plot_coincidences_rates.savefig(
             "/home/kramer/Documents/Studium Angewandte Mathematik und "
-            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/tests/"
-            "target_images/target_image5_plot_coincidence_rates.png")
-        cls.path_target_image5_plot_coincidence_rates = "target_images/target_image5_plot_coincidence_rates.png"
+            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/"
+            "unit_tests/target_images/target_image5_plot_coincidence"
+            "_rates.png")
+        cls.path_target_image5_plot_coincidence_rates = "target_images/" \
+            "target_image5_plot_coincidence_rates.png"
 
         # create 6.figure with 1 subplot with plot_statistical_significance():
         cls.target_image6_plot_statistical_significance = plt.figure(
@@ -132,9 +139,11 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
             position=(1, 1, 1))
         cls.target_image6_plot_statistical_significance.savefig(
             "/home/kramer/Documents/Studium Angewandte Mathematik und "
-            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/tests/"
-            "target_images/target_image6_plot_statistical_significance.png")
-        cls.path_target_image6_plot_statistical_significance = "target_images/target_image6_plot_statistical_significance.png"
+            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/"
+            "unit_tests/target_images/target_image6_plot_statistical"
+            "_significance.png")
+        cls.path_target_image6_plot_statistical_significance = "target_images"\
+            "/target_image6_plot_statistical_significance.png"
 
         # create 7.figure with 1 subplot with plot_unitary_events():
         cls.target_image7_plot_unitary_events = plt.figure("7",
@@ -146,9 +155,10 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
             position=(1, 1, 1))
         cls.target_image7_plot_unitary_events.savefig(
             "/home/kramer/Documents/Studium Angewandte Mathematik und "
-            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/tests/"
-            "target_images/target_image7_plot_unitary_events.png")
-        cls.path_target_image7_plot_unitary_events = "target_images/target_image7_plot_unitary_events.png"
+            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/"
+            "unit_tests/target_images/target_image7_plot_unitary_events.png")
+        cls.path_target_image7_plot_unitary_events = "target_images/" \
+            "target_image7_plot_unitary_events.png"
 
     def test_plot_unitary_event_full_analysis(self):
         # create result image
@@ -168,9 +178,10 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
                       (6, 1, 6)))
         result_image1_plot_UE_full_analysis.savefig(
             "/home/kramer/Documents/Studium Angewandte Mathematik und "
-            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/tests/"
-            "target_images/result_image1_plot_UE_full_analysis.png")
-        self.path_result_image1__plot_UE_full_analysis = "target_images/result_image1_plot_UE_full_analysis.png"
+            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/"
+            "unit_tests/target_images/result_image1_plot_UE_full_analysis.png")
+        self.path_result_image1__plot_UE_full_analysis = "target_images/" \
+            "result_image1_plot_UE_full_analysis.png"
 
         # assertion
         self.assertTrue(compare_images(
@@ -187,9 +198,10 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
             position=(1, 1, 1))
         self.result_image2_plot_spike_events.savefig(
             "/home/kramer/Documents/Studium Angewandte Mathematik und "
-            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/tests/"
-            "target_images/result_image2_plot_spike_events.png")
-        self.path_result_image2_plot_spike_events = "target_images/result_image2_plot_spike_events.png"
+            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/"
+            "unit_tests/target_images/result_image2_plot_spike_events.png")
+        self.path_result_image2_plot_spike_events = "target_images/" \
+            "result_image2_plot_spike_events.png"
 
         # import os
         # print ("Standort2: " , os.getcwd())
@@ -211,9 +223,10 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
             position=(1, 1, 1))
         self.result_image3_plot_spike_rates.savefig(
             "/home/kramer/Documents/Studium Angewandte Mathematik und "
-            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/tests/"
-            "target_images/result_image3_plot_spike_rates.png")
-        self.path_result_image3_plot_spike_rates = "target_images/result_image3_plot_spike_rates.png"
+            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/"
+            "unit_tests/target_images/result_image3_plot_spike_rates.png")
+        self.path_result_image3_plot_spike_rates = "target_images/" \
+            "result_image3_plot_spike_rates.png"
 
         # assertion
         self.assertTrue(compare_images(
@@ -231,9 +244,11 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
             position=(1, 1, 1))
         self.result_image4_plot_coincidence_events.savefig(
             "/home/kramer/Documents/Studium Angewandte Mathematik und "
-            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/tests/"
-            "target_images/result_image4_plot_coincidence_events.png")
-        self.path_result_image4_plot_coincidence_events = "target_images/result_image4_plot_coincidence_events.png"
+            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/"
+            "unit_tests/target_images/result_image4_plot_coincidence"
+            "_events.png")
+        self.path_result_image4_plot_coincidence_events = "target_images/" \
+            "result_image4_plot_coincidence_events.png"
 
         # import os
         # print ("standort4: ", os.getcwd())
@@ -254,9 +269,11 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
             position=(1, 1, 1))
         self.result_image5_plot_coincidences_rates.savefig(
             "/home/kramer/Documents/Studium Angewandte Mathematik und "
-            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/tests/"
-            "target_images/result_image5_plot_coincidence_rates.png")
-        self.path_result_image5_plot_coincidence_rates = "target_images/result_image5_plot_coincidence_rates.png"
+            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/"
+            "unit_tests/target_images/result_image5_plot_coincidence"
+            "_rates.png")
+        self.path_result_image5_plot_coincidence_rates = "target_images/" \
+            "result_image5_plot_coincidence_rates.png"
 
         # assertion
         self.assertTrue(compare_images(
@@ -275,9 +292,11 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
             position=(1, 1, 1))
         self.result_image6_plot_statistical_significance.savefig(
             "/home/kramer/Documents/Studium Angewandte Mathematik und "
-            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/tests/"
-            "target_images/result_image6_plot_statistical_significance.png")
-        self.path_result_image6_plot_statistical_significance = "target_images/result_image6_plot_statistical_significance.png"
+            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/"
+            "unit_tests/target_images/result_image6_plot_statistical"
+            "_significance.png")
+        self.path_result_image6_plot_statistical_significance = \
+            "target_images/result_image6_plot_statistical_significance.png"
 
         # assertion
         self.assertTrue(compare_images(
@@ -295,9 +314,10 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
             position=(1, 1, 1))
         self.result_image7_plot_unitary_events.savefig(
             "/home/kramer/Documents/Studium Angewandte Mathematik und "
-            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/tests/"
-            "target_images/result_image7_plot_unitary_events.png")
-        self.path_result_image7_plot_unitary_events = "target_images/result_image7_plot_unitary_events.png"
+            "Informatik/INM6/PycharmProjects/viziphant-new/viziphant/"
+            "unit_tests/target_images/result_image7_plot_unitary_events.png")
+        self.path_result_image7_plot_unitary_events = "target_images/" \
+            "result_image7_plot_unitary_events.png"
 
         # assertion
         self.assertTrue(compare_images(
