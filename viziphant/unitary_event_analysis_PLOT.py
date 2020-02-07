@@ -47,11 +47,10 @@ plot_markers_default = {
 }
 
 
-def plot_unitary_event_full_analysis(data, joint_suprise_dict,
-                                     joint_suprise_significance, binsize,
-                                     window_size, window_step, n_neurons,
-                                     plot_params_user, plot_markers_user,
-                                     position):
+def plot_unitary_event_full_analysis(
+        data, joint_suprise_dict, joint_suprise_significance, binsize,
+        window_size, window_step, n_neurons, plot_params_user,
+        plot_markers_user, position):
     """
     Visualization of the results of the Unitary Event Analysis.
 
@@ -60,6 +59,13 @@ def plot_unitary_event_full_analysis(data, joint_suprise_dict,
     between simultaneously recorded neurons by comparing the empirical
     spike coincidences (precision of a few ms) to the expected number
     based on the firing rates of the neurons.
+    The following plots will be created:
+    - Spike Events (as rasterplot)
+    - Spike Rates (as curve)
+    - Coincident Events (as rasterplot with markers)
+    - Empirical & Excpected Coincidences Rates (as curves)
+    - Suprise or Statistical Significance (as curve with alpha-limits)
+    - Unitary Events (as rasterplot with markers)
 
     Parameters
     ----------
@@ -95,14 +101,8 @@ def plot_unitary_event_full_analysis(data, joint_suprise_dict,
 
     Returns
     -------
-    NONE,
-    but the following plots will be created:
-    - Spike Events (as rasterplot)
-    - Spike Rates (as curve)
-    - Coincident Events (as rasterplot with markers)
-    - Empirical & Excpected Coincidences Rates (as curves)
-    - Suprise or Statistical Significance (as curve with alpha-limits)
-    - Unitary Events (as rasterplot with markers)
+    NO
+
 
     Raises
     ------
@@ -137,6 +137,7 @@ def plot_unitary_event_full_analysis(data, joint_suprise_dict,
     :license: Modified BSD, see LICENSE.txt for details.
     """
 
+    # checking the user entries:
     """
     try:
         _checkungUserEntries_plot_UE(data, joint_suprise_dict, 
@@ -155,48 +156,45 @@ def plot_unitary_event_full_analysis(data, joint_suprise_dict,
     if len(plot_params['unit_real_ids']) != n_neurons:
         raise ValueError(
             'length of unit_ids should be equal to number of neurons! \n'
-            'Unit_Ids: ' + plot_params[
-                'unit_real_ids'] + 'ungleich NumOfNeurons: ' + n_neurons)
+            'Unit_Ids: ' + plot_params['unit_real_ids']
+            + 'ungleich NumOfNeurons: ' + n_neurons)
 
     if 'suptitle' in plot_params.keys():
-        # 'suptitle' im Default nicht vorhanden,
-        # kann also nur ueber plot_params_user eingepflegt werden
         plt.suptitle("Trial aligned on " +
                      plot_params['suptitle'], fontsize=20)
     plt.subplots_adjust(hspace=plot_params['hspace'],
                         wspace=plot_params['wspace'])
 
-    plot_spike_events(data, window_size, window_step, n_neurons,
-                      plot_params_user, plot_markers_user[0],
-                      position[0])
+    plot_spike_events(
+        data, window_size, window_step, n_neurons, plot_params_user,
+        plot_markers_user[0], position[0])
 
-    plot_spike_rates(data, joint_suprise_dict, window_size, window_step,
-                     n_neurons,
-                     plot_params_user, plot_markers_user[1], position[1])
+    plot_spike_rates(
+        data, joint_suprise_dict, window_size, window_step, n_neurons,
+        plot_params_user, plot_markers_user[1], position[1])
 
-    plot_coincidence_events(data, joint_suprise_dict, binsize, window_size,
-                            window_step, n_neurons,
-                            plot_params_user, plot_markers_user[2],
-                            position[2])
+    plot_coincidence_events(
+        data, joint_suprise_dict, binsize, window_size, window_step, n_neurons,
+        plot_params_user, plot_markers_user[2], position[2])
 
-    plot_coincidence_rates(data, joint_suprise_dict, window_size, window_step,
-                           n_neurons,
-                           plot_params_user, plot_markers_user[3], position[3])
+    plot_coincidence_rates(
+        data, joint_suprise_dict, window_size, window_step, n_neurons,
+        plot_params_user, plot_markers_user[3], position[3])
 
-    plot_statistical_significance(data, joint_suprise_dict,
-                                  joint_suprise_significance, window_size,
-                                  window_step,
-                                  n_neurons, plot_params_user,
-                                  plot_markers_user[4], position[4])
+    plot_statistical_significance(
+        data, joint_suprise_dict, joint_suprise_significance, window_size,
+        window_step, n_neurons, plot_params_user, plot_markers_user[4],
+        position[4])
 
-    plot_unitary_events(data, joint_suprise_dict, joint_suprise_significance,
-                        binsize, window_size, window_step,
-                        n_neurons, plot_params_user, plot_markers_user[5],
-                        position[5])
+    plot_unitary_events(
+        data, joint_suprise_dict, joint_suprise_significance, binsize,
+        window_size, window_step, n_neurons, plot_params_user,
+        plot_markers_user[5], position[5])
 
 
-def plot_spike_events(data, window_size, window_step, n_neurons,
-                      plot_params_user, plot_markers_user, position):
+def plot_spike_events(
+        data, window_size, window_step, n_neurons, plot_params_user,
+        plot_markers_user, position):
     """
     Visualization of the spike events of the Unitary Event Analysis.
 
@@ -268,9 +266,6 @@ def plot_spike_events(data, window_size, window_step, n_neurons,
 
     t_start = data[0][0].t_start
     t_stop = data[0][0].t_stop
-    # joint_suprise_significance war NotANumber;; vorher
-    # joint_suprise_significance = ue.jointJ(sig_level) ,d.h. doppelter
-    # ue.jointJ aufruf und deshalb war joint_suprise_significance NAN
     t_winpos = ue._winpos(t_start, t_stop, window_size, window_step)
     num_tr = len(data)
 
@@ -299,10 +294,10 @@ def plot_spike_events(data, window_size, window_step, n_neurons,
     ax0.set_ylim(0, (tr + 2) * (n + 1) + 1)
 
     if (plot_params['boolean_vertical_lines']):
-        x_line_coords = MultipleLocator(
+        x_line_vertical = MultipleLocator(
             plot_params['major_tick_width_time']).tick_values(
             t_start.magnitude, t_stop.magnitude)
-        for xc in x_line_coords:
+        for xc in x_line_vertical:
             ax0.axvline(xc, lw=plot_params['lw'],
                         color=plot_params['color_vertical_lines'])
 
@@ -312,26 +307,26 @@ def plot_spike_events(data, window_size, window_step, n_neurons,
     ax0.xaxis.set_minor_locator(
         MultipleLocator(plot_params['major_tick_width_time'] /
                         (plot_params['number_minor_ticks_time'] + 1)))
-    # set yaxis
-    yticks_list = []
+    # set y-axis
+    y_ticks_list = []
     for yt1 in range(1, n_neurons * num_tr, num_tr + 1):
-        yticks_list.append(yt1)
+        y_ticks_list.append(yt1)
     for n in range(n_neurons):
         for yt2 in range(n * (num_tr + 1) + 15, (n + 1) * num_tr, 15):
-            yticks_list.append(yt2)
-    yticks_list.sort()
+            y_ticks_list.append(yt2)
+    y_ticks_list.sort()
 
-    yticks_labels_list = [1]
+    y_ticks_labels_list = [1]
     number_of_y_ticks_per_neuron = math.floor(num_tr / 15)
     for i in range(number_of_y_ticks_per_neuron):
-        yticks_labels_list.append((i + 1) * 15)
+        y_ticks_labels_list.append((i + 1) * 15)
 
-    hilfs_liste = yticks_labels_list
+    auxiliary_list = y_ticks_labels_list
     for i in range(n_neurons - 1):
-        yticks_labels_list += hilfs_liste
+        y_ticks_labels_list += auxiliary_list
     # print(yticks_list)
-    ax0.set_yticks(yticks_list)
-    ax0.set_yticklabels(yticks_labels_list, fontsize=plot_params['fsize'])
+    ax0.set_yticks(y_ticks_list)
+    ax0.set_yticklabels(y_ticks_labels_list, fontsize=plot_params['fsize'])
 
     x_lim = ax0.get_xlim()
     ax0.text(x_lim[1], num_tr * 2 + 7, 'Neuron 2')
@@ -341,9 +336,9 @@ def plot_spike_events(data, window_size, window_step, n_neurons,
     ax0.set_ylabel('Trial', fontsize=plot_params['fsize'])
 
 
-def plot_spike_rates(data, joint_suprise_dict, window_size, window_step,
-                     n_neurons, plot_params_user,
-                     plot_markers_user, position):
+def plot_spike_rates(
+        data, joint_suprise_dict, window_size, window_step, n_neurons,
+        plot_params_user, plot_markers_user, position):
     """
     Visualization of the spike rates of the Unitary Event Analysis.
 
@@ -414,9 +409,6 @@ def plot_spike_rates(data, joint_suprise_dict, window_size, window_step,
 
     t_start = data[0][0].t_start
     t_stop = data[0][0].t_stop
-    # joint_suprise_significance war NotANumber;; vorher
-    # joint_suprise_significance = ue.jointJ(sig_level) ,d.h. doppelter
-    # ue.jointJ aufruf und deshalb war joint_suprise_significance NAN
     t_winpos = ue._winpos(t_start, t_stop, window_size, window_step)
 
     # subplot format
@@ -440,10 +432,10 @@ def plot_spike_rates(data, joint_suprise_dict, window_size, window_step,
     ax1.set_ylim(0, max_val_psth)
 
     if (plot_params['boolean_vertical_lines']):
-        x_line_coords = MultipleLocator(
+        x_line_vertical = MultipleLocator(
             plot_params['major_tick_width_time']).tick_values(
             t_start.magnitude, t_stop.magnitude)
-        for xc in x_line_coords:
+        for xc in x_line_vertical:
             ax1.axvline(xc, lw=plot_params['lw'],
                         color=plot_params['color_vertical_lines'])
 
@@ -460,9 +452,9 @@ def plot_spike_rates(data, joint_suprise_dict, window_size, window_step,
     ax1.set_ylabel('(1/s)', fontsize=plot_params['fsize'])
 
 
-def plot_coincidence_events(data, joint_suprise_dict, binsize, window_size,
-                            window_step, n_neurons,
-                            plot_params_user, plot_markers_user, position):
+def plot_coincidence_events(
+        data, joint_suprise_dict, binsize, window_size, window_step, n_neurons,
+        plot_params_user, plot_markers_user, position):
     """
     Visualization of the coincidence events of the Unitary Event Analysis.
 
@@ -537,9 +529,6 @@ def plot_coincidence_events(data, joint_suprise_dict, binsize, window_size,
 
     t_start = data[0][0].t_start
     t_stop = data[0][0].t_stop
-    # joint_suprise_significance war NotANumber;; vorher
-    # joint_suprise_significance = ue.jointJ(sig_level) ,d.h. doppelter
-    # ue.jointJ aufruf und deshalb war joint_suprise_significance NAN
     t_winpos = ue._winpos(t_start, t_stop, window_size, window_step)
     num_tr = len(data)
 
@@ -575,10 +564,10 @@ def plot_coincidence_events(data, joint_suprise_dict, binsize, window_size,
     ax2.set_xlim(0, (max(t_winpos) + window_size).rescale('ms').magnitude)
 
     if (plot_params['boolean_vertical_lines']):
-        x_line_coords = MultipleLocator(
+        x_line_veritcal = MultipleLocator(
             plot_params['major_tick_width_time']).tick_values(
             t_start.magnitude, t_stop.magnitude)
-        for xc in x_line_coords:
+        for xc in x_line_veritcal:
             ax2.axvline(xc, lw=plot_params['lw'],
                         color=plot_params['color_vertical_lines'])
 
@@ -588,33 +577,33 @@ def plot_coincidence_events(data, joint_suprise_dict, binsize, window_size,
     ax2.xaxis.set_minor_locator(
         MultipleLocator(plot_params['major_tick_width_time'] /
                         (plot_params['number_minor_ticks_time'] + 1)))
-    # set yaxis
-    yticks_list = []
+    # set y-axis
+    y_ticks_list = []
     for yt1 in range(1, n_neurons * num_tr, num_tr + 1):
-        yticks_list.append(yt1)
+        y_ticks_list.append(yt1)
     for n in range(n_neurons):
         for yt2 in range(n * (num_tr + 1) + 15, (n + 1) * num_tr, 15):
-            yticks_list.append(yt2)
-    yticks_list.sort()
+            y_ticks_list.append(yt2)
+    y_ticks_list.sort()
 
-    yticks_labels_list = [1]
+    y_ticks_labels_list = [1]
     number_of_y_ticks_per_neuron = math.floor(num_tr / 15)
     for i in range(number_of_y_ticks_per_neuron):
-        yticks_labels_list.append((i + 1) * 15)
+        y_ticks_labels_list.append((i + 1) * 15)
 
-    hilfsListe = yticks_labels_list
+    auxiliary_list = y_ticks_labels_list
     for i in range(n_neurons - 1):
-        yticks_labels_list += hilfsListe
-    ax2.set_yticks(yticks_list)
-    ax2.set_yticklabels(yticks_labels_list, fontsize=plot_params['fsize'])
+        y_ticks_labels_list += auxiliary_list
+    ax2.set_yticks(y_ticks_list)
+    ax2.set_yticklabels(y_ticks_labels_list, fontsize=plot_params['fsize'])
 
     ax2.set_xlabel('Time [ms]', fontsize=plot_params['fsize'])
     ax2.set_ylabel('Trial', fontsize=plot_params['fsize'])
 
 
-def plot_coincidence_rates(data, joint_suprise_dict, window_size, window_step,
-                           n_neurons, plot_params_user,
-                           plot_markers_user, position):
+def plot_coincidence_rates(
+        data, joint_suprise_dict, window_size, window_step, n_neurons,
+        plot_params_user, plot_markers_user, position):
     """
     Visualization of the coincidence rates of the Unitary Event Analysis.
 
@@ -689,9 +678,6 @@ def plot_coincidence_rates(data, joint_suprise_dict, window_size, window_step,
 
     t_start = data[0][0].t_start
     t_stop = data[0][0].t_stop
-    # joint_suprise_significance war NotANumber;; vorher
-    # joint_suprise_significance = ue.jointJ(sig_level) ,d.h. doppelter
-    # ue.jointJ aufruf und deshalb war joint_suprise_significance NAN
     t_winpos = ue._winpos(t_start, t_stop, window_size, window_step)
     num_tr = len(data)
 
@@ -723,10 +709,10 @@ def plot_coincidence_rates(data, joint_suprise_dict, window_size, window_step,
     ax3.set_xlim(0, (max(t_winpos) + window_size).rescale('ms').magnitude)
 
     if (plot_params['boolean_vertical_lines']):
-        x_line_coords = MultipleLocator(
+        x_line_vertical = MultipleLocator(
             plot_params['major_tick_width_time']).tick_values(
             t_start.magnitude, t_stop.magnitude)
-        for xc in x_line_coords:
+        for xc in x_line_vertical:
             ax3.axvline(xc, lw=plot_params['lw'],
                         color=plot_params['color_vertical_lines'])
 
@@ -744,11 +730,10 @@ def plot_coincidence_rates(data, joint_suprise_dict, window_size, window_step,
     ax3.set_ylabel('(1/s)', fontsize=plot_params['fsize'])
 
 
-def plot_statistical_significance(data, joint_suprise_dict,
-                                  joint_suprise_significance, window_size,
-                                  window_step, n_neurons,
-                                  plot_params_user, plot_markers_user,
-                                  position):
+def plot_statistical_significance(
+        data, joint_suprise_dict, joint_suprise_significance, window_size,
+        window_step, n_neurons, plot_params_user, plot_markers_user, position):
+
     """
     Visualization of the statistical significance
     of the Unitary Event Analysis.
@@ -857,10 +842,10 @@ def plot_statistical_significance(data, joint_suprise_dict,
              color=plot_markers['data_markercolor'][2])
 
     if (plot_params['boolean_vertical_lines']):
-        x_line_coords = MultipleLocator(
+        x_line_vertical = MultipleLocator(
             plot_params['major_tick_width_time']).tick_values(
             t_start.magnitude, t_stop.magnitude)
-        for xc in x_line_coords:
+        for xc in x_line_vertical:
             ax4.axvline(xc, lw=plot_params['lw'],
                         color=plot_params['color_vertical_lines'])
 
@@ -876,10 +861,11 @@ def plot_statistical_significance(data, joint_suprise_dict,
     ax4.set_yticklabels([alpha + 0.5, alpha, alpha - 0.5])
 
 
-def plot_unitary_events(data, joint_suprise_dict, joint_suprise_significance,
-                        binsize, window_size, window_step,
-                        n_neurons, plot_params_user, plot_markers_user,
-                        position):
+def plot_unitary_events(
+        data, joint_suprise_dict, joint_suprise_significance, binsize,
+        window_size, window_step, n_neurons, plot_params_user,
+        plot_markers_user, position):
+
     """
     Visualization of the unitary events of the Unitary Event Analysis.
 
@@ -957,8 +943,6 @@ def plot_unitary_events(data, joint_suprise_dict, joint_suprise_significance,
     t_stop = data[0][0].t_stop
     t_winpos = ue._winpos(t_start, t_stop, window_size, window_step)
     num_tr = len(data)
-    ls = '-'
-    alpha = 0.5
 
     # subplot format
     plot_params = plot_params_default.copy()
@@ -1009,10 +993,10 @@ def plot_unitary_events(data, joint_suprise_dict, joint_suprise_significance,
     ax5.set_ylim(0, (tr + 2) * (n + 1) + 1)
 
     if (plot_params['boolean_vertical_lines']):
-        x_line_coords = MultipleLocator(
+        x_line_vertical = MultipleLocator(
             plot_params['major_tick_width_time']).tick_values(
             t_start.magnitude, t_stop.magnitude)
-        for xc in x_line_coords:
+        for xc in x_line_vertical:
             ax5.axvline(xc, lw=plot_params['lw'],
                         color=plot_params['color_vertical_lines'])
 
@@ -1022,37 +1006,36 @@ def plot_unitary_events(data, joint_suprise_dict, joint_suprise_significance,
     ax5.xaxis.set_minor_locator(
         MultipleLocator(plot_params['major_tick_width_time'] /
                         (plot_params['number_minor_ticks_time'] + 1)))
-    # set yaxis
-    yticks_list = []
+    # set y-axis
+    y_ticks_list = []
     for yt1 in range(1, n_neurons * num_tr, num_tr + 1):
-        yticks_list.append(yt1)
+        y_ticks_list.append(yt1)
     for n in range(n_neurons):
         for yt2 in range(n * (num_tr + 1) + 15, (n + 1) * num_tr, 15):
-            yticks_list.append(yt2)
-    yticks_list.sort()
+            y_ticks_list.append(yt2)
+    y_ticks_list.sort()
 
-    yticks_labels_list = [1]
+    y_ticks_labels_list = [1]
     number_of_y_ticks_per_neuron = math.floor(num_tr / 15)
     for i in range(number_of_y_ticks_per_neuron):
-        yticks_labels_list.append((i + 1) * 15)
+        y_ticks_labels_list.append((i + 1) * 15)
 
-    hilfs_liste = yticks_labels_list
+    auxiliary_list = y_ticks_labels_list
     for i in range(n_neurons - 1):
-        yticks_labels_list += hilfs_liste
+        y_ticks_labels_list += auxiliary_list
 
-    ax5.set_yticks(yticks_list)
-    ax5.set_yticklabels(yticks_labels_list, fontsize=plot_params['fsize'])
+    ax5.set_yticks(y_ticks_list)
+    ax5.set_yticklabels(y_ticks_labels_list, fontsize=plot_params['fsize'])
 
     ax5.set_xlabel('Time [ms]', fontsize=plot_params['fsize'])
     ax5.set_ylabel('Trial', fontsize=plot_params['fsize'])
 
 
-def _checking_user_entries_of_plot_UE(data, joint_suprise_dict,
-                                      joint_suprise_significance, binsize,
-                                      window_size, window_step,
-                                      pattern_hash, n_neurons,
-                                      plot_params_user, plot_markers_user,
-                                      position):
+def _checking_user_entries_of_plot_UE(
+        data, joint_suprise_dict, joint_suprise_significance, binsize,
+        window_size, window_step, pattern_hash, n_neurons, plot_params_user,
+        plot_markers_user, position):
+
     if (not isinstance(data, list) and not isinstance(
             data, numpy.ndarray)):  # sollen weiter Typen erlaubt sein???
         raise TypeError('data must be a list (of spiketrains)')
