@@ -45,7 +45,7 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
         # create 1.figure with 6 subplots with
         cti.create_target_plot_UE_full_analysis()
         cls.path_target_image_plot_UE_full_analysis = \
-            cti.PLOT_UE_FULL_ANALYSIS_TARGET_PATH
+           cti.PLOT_UE_FULL_ANALYSIS_TARGET_PATH
 
         # create 2.figure with 1 subplot with plot_spike_events():
         cti.create_target_spike_events()
@@ -84,15 +84,8 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
         plot_unitary_event_full_analysis(
             self.spiketrains, self.UE, ue.jointJ(0.05), binsize=5 * pq.ms,
             window_size=100 * pq.ms, window_step=10 * pq.ms, n_neurons=2,
-            plot_params_user={'fsize': 14},
-            plot_markers_user=[{},
-                               {'data_markercolor': ("r", "b")},
-                               {},
-                               {'data_markercolor': ("m", "g")},
-                               {'data_markercolor': ("k", "b", "r")},
-                               {}],
             position=((6, 1, 1), (6, 1, 2), (6, 1, 3), (6, 1, 4), (6, 1, 5),
-                      (6, 1, 6)))
+                      (6, 1, 6)), plot_params_and_markers_user={'fsize': 14})
         self.path_result_image_plot_UE_full_analysis = \
             tempfile.mkstemp(suffix=".png")[1]
         self.result_image_plot_UE_full_analysis.savefig(
@@ -109,8 +102,8 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
                                                          figsize=(20, 20))
         plot_spike_events(
             self.spiketrains, window_size=100 * pq.ms, window_step=10 * pq.ms,
-            n_neurons=2, plot_params_user={'fsize': 14}, plot_markers_user=[],
-            position=(1, 1, 1))
+            n_neurons=2, position=(1, 1, 1),
+            plot_params_and_markers_user={'fsize': 14})
         self.path_result_image_plot_spike_events = \
             tempfile.mkstemp(suffix=".png")[1]
         self.result_image_plot_spike_events.savefig(
@@ -128,9 +121,7 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
         plot_spike_rates(
             self.spiketrains, self.UE, window_size=100 * pq.ms,
             window_step=10 * pq.ms, n_neurons=2,
-            plot_params_user={'fsize': 14},
-            plot_markers_user={'data_markercolor': ("r", "b")},
-            position=(1, 1, 1))
+            position=(1, 1, 1), plot_params_and_marker_user={'fsize': 14})
         self.path_result_image_plot_spike_rates = \
             tempfile.mkstemp(suffix=".png")[1]
         self.result_image_plot_spike_rates.savefig(
@@ -146,10 +137,9 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
         self.result_image_plot_coincidence_events = plt.figure(
             "4.1", figsize=(20, 20))
         plot_coincidence_events(
-            self.spiketrains, self.UE, ue.jointJ(0.05),
-            window_size=100 * pq.ms, window_step=10 * pq.ms, n_neurons=2,
-            plot_params_user={'fsize': 14}, plot_markers_user={},
-            position=(1, 1, 1))
+            self.spiketrains, self.UE, ue.jointJ(0.05), window_size=100 * pq.ms,
+            window_step=10 * pq.ms, n_neurons=2, position=(1, 1, 1),
+            plot_params_and_markers_user={'fsize': 14})
         self.path_result_image_plot_coincidence_events = \
             tempfile.mkstemp(suffix=".png")[1]
         self.result_image_plot_coincidence_events.savefig(
@@ -166,10 +156,8 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
             "5.1", figsize=(20, 20))
         plot_coincidence_rates(
             self.spiketrains, self.UE, window_size=100 * pq.ms,
-            window_step=10 * pq.ms, n_neurons=2,
-            plot_params_user={'fsize': 14},
-            plot_markers_user={'data_markercolor': ("m", "g")},
-            position=(1, 1, 1))
+            window_step=10 * pq.ms, n_neurons=2, position=(1, 1, 1),
+            plot_params_and_markers_user={'fsize': 14})
         self.path_result_image_plot_coincidence_rates = \
             tempfile.mkstemp(suffix=".png")[1]
         self.result_image_plot_coincidences_rates.savefig(
@@ -185,11 +173,9 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
         self.result_image_plot_statistical_significance = plt.figure(
             "6.1", figsize=(20, 20))
         plot_statistical_significance(
-            self.spiketrains, self.UE, ue.jointJ(0.05),
-            window_size=100 * pq.ms, window_step=10 * pq.ms,
-            n_neurons=2, plot_params_user={'fsize': 14},
-            plot_markers_user={'data_markercolor': ("k", "b", "r")},
-            position=(1, 1, 1))
+            self.spiketrains, self.UE, ue.jointJ(0.05), window_size=100 * pq.ms,
+            window_step=10 * pq.ms, n_neurons=2, position=(1, 1, 1),
+            plot_params_and_markers_user={'fsize': 14})
         self.path_result_image_plot_statistical_significance = \
             tempfile.mkstemp(suffix=".png")[1]
         self.result_image_plot_statistical_significance.savefig(
@@ -207,8 +193,7 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
         plot_unitary_events(
             self.spiketrains, self.UE, ue.jointJ(0.05), binsize=5 * pq.ms,
             window_size=100 * pq.ms, window_step=10 * pq.ms, n_neurons=2,
-            plot_params_user={'fsize': 14}, plot_markers_user={},
-            position=(1, 1, 1))
+            position=(1, 1, 1), plot_params_and_markers_user={'fsize': 14})
         self.path_result_image_plot_unitary_events = \
             tempfile.mkstemp(suffix=".png")[1]
         self.result_image_plot_unitary_events.savefig(

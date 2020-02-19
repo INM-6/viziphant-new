@@ -5,7 +5,10 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import (MultipleLocator, FormatStrFormatter)
 import elephant.unitary_event_analysis as ue
 
-plot_params_default = {
+# TODO: remember: *args, unpacking operator * returns a tuple not a list
+#                 **kwargs, unpacking operator ** returns a dictionary
+plot_params_and_markers_default = {
+    ## params
     # epochs to be marked on the time axis
     'events': [],
     # id of the units
@@ -30,13 +33,11 @@ plot_params_default = {
     # added
     'boolean_vertical_lines': False,
     # color of the vertical lines at the major ticks of the x-axis
-    'color_vertical_lines': "r"
-}
-
-plot_markers_default = {
+    'color_vertical_lines': "r",
+    ## markers
     'data_symbol': ".",
     'data_markersize': 0.5,
-    'data_markercolor': ("k"),
+    'data_markercolor': ("k", "b", "r"),
     'data_markerfacecolor': "none",
     'data_markeredgecolor': "none",
     'event_symbol': "s",
@@ -49,8 +50,8 @@ plot_markers_default = {
 
 def plot_unitary_event_full_analysis(
         data, joint_suprise_dict, joint_suprise_significance, binsize,
-        window_size, window_step, n_neurons, plot_params_user,
-        plot_markers_user, position):
+        window_size, window_step, n_neurons, position,
+        **plot_params_and_markers_user):
     """
     Visualization of the results of the Unitary Event Analysis.
 
@@ -82,20 +83,15 @@ def plot_unitary_event_full_analysis(
        size of the window of analysis
     window_step: Quantity scalar with dimension time
        size of the window step
-    pattern_hash: list of integers
-       list of interested patterns in hash values
-       (see hash_from_pattern and inverse_hash_from_pattern functions)
     n_neurons: integer
         number of Neurons
-    plot_params_user: dictionary
-        plotting parameters from the user
-    plot_markers_user: list of dictionaries
-        marker properties from the user
-    position: list of position-tupels
+    plot_params_and_markers_user: dictionary
+        plotting parameters and marker properties from the user
+    position: list
         (posSpikeEvents(c,r,i), posSpikeRates(c,r,i),
          posCoincidenceEvents(c,r,i), posCoincidenceRates(c,r,i),
         posStatisticalSignificance(c,r,i), posUnitaryEvents(c,r,i))
-        pos is a three integer-tupel, where the first integer is the number
+        pos is a three integer-tuple, where the first integer is the number
         of rows, the second the number of columns, and the third the index
         of the subplot
 
@@ -149,52 +145,51 @@ def plot_unitary_event_full_analysis(
         raise errors
     """
 
-    # subplots format
-    plot_params = plot_params_default.copy()
-    plot_params.update(plot_params_user)
+    # subplots format and marker properties
+    plot_params_and_markers_dict = plot_params_and_markers_default.copy()
+    plot_params_and_markers_dict.update(plot_params_and_markers_user)
 
-    if len(plot_params['unit_real_ids']) != n_neurons:
+    if len(plot_params_and_markers_dict['unit_real_ids']) != n_neurons:
         raise ValueError(
             'length of unit_ids should be equal to number of neurons! \n'
-            'Unit_Ids: ' + plot_params['unit_real_ids']
+            'Unit_Ids: ' + plot_params_and_markers_dict['unit_real_ids']
             + 'ungleich NumOfNeurons: ' + n_neurons)
 
-    if 'suptitle' in plot_params.keys():
+    if 'suptitle' in plot_params_and_markers_dict.keys():
         plt.suptitle("Trial aligned on " +
-                     plot_params['suptitle'], fontsize=20)
-    plt.subplots_adjust(hspace=plot_params['hspace'],
-                        wspace=plot_params['wspace'])
+                     plot_params_and_markers_dict['suptitle'], fontsize=20)
+    plt.subplots_adjust(hspace=plot_params_and_markers_dict['hspace'],
+                        wspace=plot_params_and_markers_dict['wspace'])
 
     plot_spike_events(
-        data, window_size, window_step, n_neurons, plot_params_user,
-        plot_markers_user[0], position[0])
+        data, window_size, window_step, n_neurons, position[0],
+        **plot_params_and_markers_dict)
 
     plot_spike_rates(
         data, joint_suprise_dict, window_size, window_step, n_neurons,
-        plot_params_user, plot_markers_user[1], position[1])
+        position[1], **plot_params_and_markers_dict)
 
     plot_coincidence_events(
         data, joint_suprise_dict, binsize, window_size, window_step, n_neurons,
-        plot_params_user, plot_markers_user[2], position[2])
+        position[2], **plot_params_and_markers_dict)
 
     plot_coincidence_rates(
         data, joint_suprise_dict, window_size, window_step, n_neurons,
-        plot_params_user, plot_markers_user[3], position[3])
+        position[3], **plot_params_and_markers_dict)
 
     plot_statistical_significance(
         data, joint_suprise_dict, joint_suprise_significance, window_size,
-        window_step, n_neurons, plot_params_user, plot_markers_user[4],
-        position[4])
+        window_step, n_neurons, position[4], **plot_params_and_markers_dict)
 
     plot_unitary_events(
         data, joint_suprise_dict, joint_suprise_significance, binsize,
-        window_size, window_step, n_neurons, plot_params_user,
-        plot_markers_user[5], position[5])
+        window_size, window_step, n_neurons, position[5],
+        **plot_params_and_markers_dict)
 
 
 def plot_spike_events(
-        data, window_size, window_step, n_neurons, plot_params_user,
-        plot_markers_user, position):
+        data, window_size, window_step, n_neurons, position,
+        **plot_params_and_markers_user):
     """
     Visualization of the spike events of the Unitary Event Analysis.
 
@@ -214,12 +209,10 @@ def plot_spike_events(
        size of the window step
     n_neurons: integer
         number of Neurons
-    plot_params_user: dictionary
-        plotting parameters from the user
-    plot_markers_user: list of dictionaries
-        marker properties from the user
-    position: position-tupel
-        position is a three integer-tupel, where the first integer is the
+    plot_params_and_markers_user: dictionary
+        plotting parameters and marker properties from the user
+    position: tuple
+        position is a three integer-tuple, where the first integer is the
         number of rows, the second the number of columns, and the third the
         index of the subplot
 
@@ -269,12 +262,9 @@ def plot_spike_events(
     t_winpos = ue._winpos(t_start, t_stop, window_size, window_step)
     num_tr = len(data)
 
-    # subplot format
-    plot_params = plot_params_default.copy()
-    plot_params.update(plot_params_user)
-    # marker format
-    plot_markers = plot_markers_default.copy()
-    plot_markers.update(plot_markers_user)
+    # subplots format and marker properties
+    plot_params_and_markers_dict = plot_params_and_markers_default.copy()
+    plot_params_and_markers_dict.update(plot_params_and_markers_user)
 
     ax0 = plt.subplot(position[0], position[1], position[2])
     ax0.set_title('Spike Events')
@@ -283,30 +273,33 @@ def plot_spike_events(
             ax0.plot(data_tr[n].rescale('ms').magnitude,
                      numpy.ones_like(data_tr[n].magnitude) * tr + n * (
                 num_tr + 1) + 1, ls='none',
-                marker=plot_markers['data_symbol'],
-                color=plot_markers['data_markercolor'][0],
-                markersize=plot_markers['data_markersize'])
+                marker=plot_params_and_markers_dict['data_symbol'],
+                color=plot_params_and_markers_dict['data_markercolor'][0],
+                markersize=plot_params_and_markers_dict['data_markersize'])
         if n < n_neurons - 1:
-            ax0.axhline((tr + 2) * (n + 1), lw=plot_params['lw'], color='b')
+            ax0.axhline((tr + 2) * (n + 1),
+                        lw=plot_params_and_markers_dict['lw'], color='b')
 
     ax0.set_xlim(0, (max(t_winpos) + window_size).rescale(
         'ms').magnitude)  # better minimum
     ax0.set_ylim(0, (tr + 2) * (n + 1) + 1)
 
-    if (plot_params['boolean_vertical_lines']):
+    if (plot_params_and_markers_dict['boolean_vertical_lines']):
         x_line_vertical = MultipleLocator(
-            plot_params['major_tick_width_time']).tick_values(
+            plot_params_and_markers_dict['major_tick_width_time']).tick_values(
             t_start.magnitude, t_stop.magnitude)
         for xc in x_line_vertical:
-            ax0.axvline(xc, lw=plot_params['lw'],
-                        color=plot_params['color_vertical_lines'])
+            ax0.axvline(xc, lw=plot_params_and_markers_dict['lw'],
+                        color=plot_params_and_markers_dict[
+                            'color_vertical_lines'])
 
     ax0.xaxis.set_major_locator(
-        MultipleLocator(plot_params['major_tick_width_time']))
+        MultipleLocator(plot_params_and_markers_dict['major_tick_width_time']))
     ax0.xaxis.set_major_formatter(FormatStrFormatter('%d'))
     ax0.xaxis.set_minor_locator(
-        MultipleLocator(plot_params['major_tick_width_time'] /
-                        (plot_params['number_minor_ticks_time'] + 1)))
+        MultipleLocator(plot_params_and_markers_dict['major_tick_width_time'] /
+                        (plot_params_and_markers_dict
+                         ['number_minor_ticks_time'] + 1)))
     # set y-axis
     y_ticks_list = []
     for yt1 in range(1, n_neurons * num_tr, num_tr + 1):
@@ -326,19 +319,20 @@ def plot_spike_events(
         y_ticks_labels_list += auxiliary_list
     # print(yticks_list)
     ax0.set_yticks(y_ticks_list)
-    ax0.set_yticklabels(y_ticks_labels_list, fontsize=plot_params['fsize'])
+    ax0.set_yticklabels(y_ticks_labels_list,
+                        fontsize=plot_params_and_markers_dict['fsize'])
 
     x_lim = ax0.get_xlim()
     ax0.text(x_lim[1], num_tr * 2 + 7, 'Neuron 2')
     ax0.text(x_lim[1], -12, 'Neuron 1')
 
-    ax0.set_xlabel('Time [ms]', fontsize=plot_params['fsize'])
-    ax0.set_ylabel('Trial', fontsize=plot_params['fsize'])
+    ax0.set_xlabel('Time [ms]', fontsize=plot_params_and_markers_dict['fsize'])
+    ax0.set_ylabel('Trial', fontsize=plot_params_and_markers_dict['fsize'])
 
 
 def plot_spike_rates(
         data, joint_suprise_dict, window_size, window_step, n_neurons,
-        plot_params_user, plot_markers_user, position):
+        position, **plot_params_and_markers_user):
     """
     Visualization of the spike rates of the Unitary Event Analysis.
 
@@ -346,7 +340,7 @@ def plot_spike_rates(
 
     Parameters
     ----------
-    data: list of spiketrains
+    data: list
         list of spiketrains in different trials as representation of
         neural activity
     joint_suprise_dict: dictionary
@@ -357,12 +351,10 @@ def plot_spike_rates(
        size of the window step
     n_neurons: integer
         number of Neurons
-    plot_params_user: dictionary
-        plotting parameters from the user
-    plot_markers_user: list of dictionaries
-        marker properties from the user
-    position: position-tupel
-        pos is a three integer-tupel, where the first integer is the number
+    plot_params_and_markers_user: dictionary
+        plotting parameters and marker properties from the user
+    position: tuple
+        pos is a three integer-tuple, where the first integer is the number
          of rows, the second the number of columns, and the third the index
          of the subplot
 
@@ -411,50 +403,50 @@ def plot_spike_rates(
     t_stop = data[0][0].t_stop
     t_winpos = ue._winpos(t_start, t_stop, window_size, window_step)
 
-    # subplot format
-    plot_params = plot_params_default.copy()
-    plot_params.update(plot_params_user)
-    # marker format
-    plot_markers = plot_markers_default.copy()
-    plot_markers.update(plot_markers_user)
+    # subplots format and marker properties
+    plot_params_and_markers_dict = plot_params_and_markers_default.copy()
+    plot_params_and_markers_dict.update(plot_params_and_markers_user)
 
     ax1 = plt.subplot(position[0], position[1], position[2])
     ax1.set_title('Spike Rates')
     for n in range(n_neurons):
         ax1.plot(t_winpos + window_size / 2.,
                  joint_suprise_dict['rate_avg'][:, n].rescale('Hz'),
-                 label='Neuron ' + str(plot_params['unit_real_ids'][n]),
-                 color=plot_markers['data_markercolor'][n],
-                 lw=plot_params['lw'])
+                 label='Neuron ' + str(plot_params_and_markers_dict
+                                       ['unit_real_ids'][n]),
+                 color=plot_params_and_markers_dict['data_markercolor'][n],
+                 lw=plot_params_and_markers_dict['lw'])
 
     ax1.set_xlim(0, (max(t_winpos) + window_size).rescale('ms').magnitude)
     max_val_psth = 40
     ax1.set_ylim(0, max_val_psth)
 
-    if (plot_params['boolean_vertical_lines']):
+    if (plot_params_and_markers_dict['boolean_vertical_lines']):
         x_line_vertical = MultipleLocator(
-            plot_params['major_tick_width_time']).tick_values(
+            plot_params_and_markers_dict['major_tick_width_time']).tick_values(
             t_start.magnitude, t_stop.magnitude)
         for xc in x_line_vertical:
-            ax1.axvline(xc, lw=plot_params['lw'],
-                        color=plot_params['color_vertical_lines'])
+            ax1.axvline(xc, lw=plot_params_and_markers_dict['lw'],
+                        color=plot_params_and_markers_dict
+                        ['color_vertical_lines'])
 
     ax1.xaxis.set_major_locator(
-        MultipleLocator(plot_params['major_tick_width_time']))
+        MultipleLocator(plot_params_and_markers_dict['major_tick_width_time']))
     ax1.xaxis.set_major_formatter(FormatStrFormatter('%d'))
     ax1.xaxis.set_minor_locator(
-        MultipleLocator(plot_params['major_tick_width_time'] /
-                        (plot_params['number_minor_ticks_time'] + 1)))
+        MultipleLocator(plot_params_and_markers_dict['major_tick_width_time'] /
+                        (plot_params_and_markers_dict
+                         ['number_minor_ticks_time'] + 1)))
     ax1.set_yticks([0, int(max_val_psth / 2), int(max_val_psth)])
 
     ax1.legend(bbox_to_anchor=(1, 1), fancybox=True, shadow=True)
-    ax1.set_xlabel('Time [ms]', fontsize=plot_params['fsize'])
-    ax1.set_ylabel('(1/s)', fontsize=plot_params['fsize'])
+    ax1.set_xlabel('Time [ms]', fontsize=plot_params_and_markers_dict['fsize'])
+    ax1.set_ylabel('(1/s)', fontsize=plot_params_and_markers_dict['fsize'])
 
 
 def plot_coincidence_events(
         data, joint_suprise_dict, binsize, window_size, window_step, n_neurons,
-        plot_params_user, plot_markers_user, position):
+        position, **plot_params_and_markers_user):
     """
     Visualization of the coincidence events of the Unitary Event Analysis.
 
@@ -476,12 +468,10 @@ def plot_coincidence_events(
        size of the window step
     n_neurons: integer
         number of Neurons
-    plot_params_user: dictionary
-        plotting parameters from the user
-    plot_markers_user: list of dictionaries
-        marker properties from the user
-    position: position-tupel
-        pos is a three integer-tupel, where the first integer is the number
+    plot_params_and_markers_user: dictionary
+        plotting parameters and marker properties from the user
+    position: tuple
+        pos is a three integer-tuple, where the first integer is the number
         of rows, the second the number of columns, and the third the index
         of the subplot
 
@@ -532,12 +522,9 @@ def plot_coincidence_events(
     t_winpos = ue._winpos(t_start, t_stop, window_size, window_step)
     num_tr = len(data)
 
-    # subplot format
-    plot_params = plot_params_default.copy()
-    plot_params.update(plot_params_user)
-    # marker format
-    plot_markers = plot_markers_default.copy()
-    plot_markers.update(plot_markers_user)
+    # subplots format and marker properties
+    plot_params_and_markers_dict = plot_params_and_markers_default.copy()
+    plot_params_and_markers_dict.update(plot_params_and_markers_user)
 
     ax2 = plt.subplot(position[0], position[1], position[2])
     ax2.set_title('Coincidence Events')
@@ -546,37 +533,42 @@ def plot_coincidence_events(
             ax2.plot(data_tr[n].rescale('ms').magnitude,
                      numpy.ones_like(data_tr[n].magnitude) *
                      tr + n * (num_tr + 1) + 1, ls='None',
-                     marker=plot_markers['data_symbol'],
-                     markersize=plot_markers['data_markersize'],
-                     color=plot_markers['data_markercolor'])
+                     marker=plot_params_and_markers_dict['data_symbol'],
+                     markersize=plot_params_and_markers_dict['data_markersize']
+                     , color=plot_params_and_markers_dict['data_markercolor'][0])
             ax2.plot(numpy.unique(
                 joint_suprise_dict['indices']['trial' + str(tr)]) * binsize,
                 numpy.ones_like(numpy.unique(
                     joint_suprise_dict['indices']['trial' + str(tr)]))
                 * tr + n * (num_tr + 1) + 1,
-                ls='', ms=plot_markers['event_markersize'],
-                marker=plot_markers['event_symbol'],
-                markerfacecolor=plot_markers['event_markerfacecolor'],
-                markeredgecolor=plot_markers['event_markeredgecolor'])
+                ls='', ms=plot_params_and_markers_dict['event_markersize'],
+                marker=plot_params_and_markers_dict['event_symbol'],
+                markerfacecolor=plot_params_and_markers_dict
+                ['event_markerfacecolor'],
+                markeredgecolor=plot_params_and_markers_dict
+                ['event_markeredgecolor'])
         if n < n_neurons - 1:
-            ax2.axhline((tr + 2) * (n + 1), lw=plot_params['lw'], color='b')
+            ax2.axhline((tr + 2) * (n + 1),
+                        lw=plot_params_and_markers_dict['lw'], color='b')
     ax2.set_ylim(0, (tr + 2) * (n + 1) + 1)
     ax2.set_xlim(0, (max(t_winpos) + window_size).rescale('ms').magnitude)
 
-    if (plot_params['boolean_vertical_lines']):
+    if (plot_params_and_markers_dict['boolean_vertical_lines']):
         x_line_veritcal = MultipleLocator(
-            plot_params['major_tick_width_time']).tick_values(
+            plot_params_and_markers_dict['major_tick_width_time']).tick_values(
             t_start.magnitude, t_stop.magnitude)
         for xc in x_line_veritcal:
-            ax2.axvline(xc, lw=plot_params['lw'],
-                        color=plot_params['color_vertical_lines'])
+            ax2.axvline(xc, lw=plot_params_and_markers_dict['lw'],
+                        color=plot_params_and_markers_dict
+                        ['color_vertical_lines'])
 
     ax2.xaxis.set_major_locator(
-        MultipleLocator(plot_params['major_tick_width_time']))
+        MultipleLocator(plot_params_and_markers_dict['major_tick_width_time']))
     ax2.xaxis.set_major_formatter(FormatStrFormatter('%d'))
     ax2.xaxis.set_minor_locator(
-        MultipleLocator(plot_params['major_tick_width_time'] /
-                        (plot_params['number_minor_ticks_time'] + 1)))
+        MultipleLocator(plot_params_and_markers_dict['major_tick_width_time'] /
+                        (plot_params_and_markers_dict
+                         ['number_minor_ticks_time'] + 1)))
     # set y-axis
     y_ticks_list = []
     for yt1 in range(1, n_neurons * num_tr, num_tr + 1):
@@ -595,15 +587,16 @@ def plot_coincidence_events(
     for i in range(n_neurons - 1):
         y_ticks_labels_list += auxiliary_list
     ax2.set_yticks(y_ticks_list)
-    ax2.set_yticklabels(y_ticks_labels_list, fontsize=plot_params['fsize'])
+    ax2.set_yticklabels(y_ticks_labels_list,
+                        fontsize=plot_params_and_markers_dict['fsize'])
 
-    ax2.set_xlabel('Time [ms]', fontsize=plot_params['fsize'])
-    ax2.set_ylabel('Trial', fontsize=plot_params['fsize'])
+    ax2.set_xlabel('Time [ms]', fontsize=plot_params_and_markers_dict['fsize'])
+    ax2.set_ylabel('Trial', fontsize=plot_params_and_markers_dict['fsize'])
 
 
 def plot_coincidence_rates(
         data, joint_suprise_dict, window_size, window_step, n_neurons,
-        plot_params_user, plot_markers_user, position):
+        position, **plot_params_and_markers_user):
     """
     Visualization of the coincidence rates of the Unitary Event Analysis.
 
@@ -626,12 +619,10 @@ def plot_coincidence_rates(
        size of the window step
     n_neurons: integer
         number of Neurons
-    plot_params_user: dictionary
-        plotting parameters from the user
-    plot_markers_user: list of dictionaries
-        marker properties from the user
-    position: position-tupel
-        pos is a three integer-tupel, where the first integer is the number
+    plot_params_and_markers_user: dictionary
+        plotting parameters and marker properties from the user
+    position: tuple
+        pos is a three integer-tuple, where the first integer is the number
         of rows, the second the number of columns, and the third the index
         of the subplot
 
@@ -681,17 +672,14 @@ def plot_coincidence_rates(
     t_winpos = ue._winpos(t_start, t_stop, window_size, window_step)
     num_tr = len(data)
 
-    # subplot format
-    plot_params = plot_params_default.copy()
-    plot_params.update(plot_params_user)
-    # marker format
-    plot_markers = plot_markers_default.copy()
-    plot_markers.update(plot_markers_user)
+    # subplots format and marker properties
+    plot_params_and_markers_dict = plot_params_and_markers_default.copy()
+    plot_params_and_markers_dict.update(plot_params_and_markers_user)
 
-    if len(plot_params['unit_real_ids']) != n_neurons:
+    if len(plot_params_and_markers_dict['unit_real_ids']) != n_neurons:
         raise ValueError(
             'length of unit_ids should be equal to number of neurons! \n'
-            'Unit_Ids: ' + plot_params[
+            'Unit_Ids: ' + plot_params_and_markers_dict[
                 'unit_real_ids'] + 'ungleich NumOfNeurons: ' + n_neurons)
 
     ax3 = plt.subplot(position[0], position[1], position[2])
@@ -699,40 +687,42 @@ def plot_coincidence_rates(
     ax3.plot(t_winpos + window_size / 2.,
              joint_suprise_dict['n_emp'] / (
                  window_size.rescale('s').magnitude * num_tr),
-             label='empirical', lw=plot_params['lw'],
-             color=plot_markers['data_markercolor'][0])
+             label='empirical', lw=plot_params_and_markers_dict['lw'],
+             color=plot_params_and_markers_dict['data_markercolor'][0])
     ax3.plot(t_winpos + window_size / 2.,
              joint_suprise_dict['n_exp'] / (
                  window_size.rescale('s').magnitude * num_tr),
-             label='expected', lw=plot_params['lw'],
-             color=plot_markers['data_markercolor'][1])
+             label='expected', lw=plot_params_and_markers_dict['lw'],
+             color=plot_params_and_markers_dict['data_markercolor'][1])
     ax3.set_xlim(0, (max(t_winpos) + window_size).rescale('ms').magnitude)
 
-    if (plot_params['boolean_vertical_lines']):
+    if (plot_params_and_markers_dict['boolean_vertical_lines']):
         x_line_vertical = MultipleLocator(
-            plot_params['major_tick_width_time']).tick_values(
+            plot_params_and_markers_dict['major_tick_width_time']).tick_values(
             t_start.magnitude, t_stop.magnitude)
         for xc in x_line_vertical:
-            ax3.axvline(xc, lw=plot_params['lw'],
-                        color=plot_params['color_vertical_lines'])
+            ax3.axvline(xc, lw=plot_params_and_markers_dict['lw'],
+                        color=plot_params_and_markers_dict
+                        ['color_vertical_lines'])
 
     ax3.xaxis.set_major_locator(
-        MultipleLocator(plot_params['major_tick_width_time']))
+        MultipleLocator(plot_params_and_markers_dict['major_tick_width_time']))
     ax3.xaxis.set_major_formatter(FormatStrFormatter('%d'))
     ax3.xaxis.set_minor_locator(
-        MultipleLocator(plot_params['major_tick_width_time'] /
-                        (plot_params['number_minor_ticks_time'] + 1)))
+        MultipleLocator(plot_params_and_markers_dict['major_tick_width_time'] /
+                        (plot_params_and_markers_dict
+                         ['number_minor_ticks_time'] + 1)))
     y_ticks = ax3.get_ylim()
     ax3.set_yticks([0, y_ticks[1] / 2, y_ticks[1]])
 
     ax3.legend(bbox_to_anchor=(1, 1), fancybox=True, shadow=True)
-    ax3.set_xlabel('Time [ms]', fontsize=plot_params['fsize'])
-    ax3.set_ylabel('(1/s)', fontsize=plot_params['fsize'])
+    ax3.set_xlabel('Time [ms]', fontsize=plot_params_and_markers_dict['fsize'])
+    ax3.set_ylabel('(1/s)', fontsize=plot_params_and_markers_dict['fsize'])
 
 
 def plot_statistical_significance(
         data, joint_suprise_dict, joint_suprise_significance, window_size,
-        window_step, n_neurons, plot_params_user, plot_markers_user, position):
+        window_step, n_neurons, position, **plot_params_and_markers_user):
 
     """
     Visualization of the statistical significance
@@ -755,12 +745,10 @@ def plot_statistical_significance(
        size of the window step
     n_neurons: integer
         number of Neurons
-    plot_params_user: dictionary
-        plotting parameters from the user
-    plot_markers_user: list of dictionaries
-        marker properties from the user
-    position: position-tupel
-        pos is a three integer-tupel, where the first integer is the number
+    plot_params_and_markers_user: dictionary
+        plotting parameters and marker properties from the user
+    position: tuple
+        pos is a three integer-tuple, where the first integer is the number
         of rows, the second the number of columns, and the third the index
         of the subplot
 
@@ -811,60 +799,59 @@ def plot_statistical_significance(
 
     alpha = 0.5
 
-    # figure format
-    plot_params = plot_params_default.copy()
-    plot_params.update(plot_params_user)
-    # marker format
-    plot_markers = plot_markers_default.copy()
-    plot_markers.update(plot_markers_user)
+    # subplots format and marker properties
+    plot_params_and_markers_dict = plot_params_and_markers_default.copy()
+    plot_params_and_markers_dict.update(plot_params_and_markers_user)
 
-    if len(plot_params['unit_real_ids']) != n_neurons:
+    if len(plot_params_and_markers_dict['unit_real_ids']) != n_neurons:
         raise ValueError('length of unit_ids should be equal to '
                         'number of neurons! \nUnit_Ids: ' +
-                        plot_params['unit_real_ids'] +
+                        plot_params_and_markers_dict['unit_real_ids'] +
                         'ungleich NumOfNeurons: ' +n_neurons)
 
     ax4 = plt.subplot(position[0], position[1], position[2])
     ax4.set_title('Statistical Significance')
     ax4.plot(t_winpos + window_size / 2., joint_suprise_dict['Js'],
-             lw=plot_params['lw'],
-             color=plot_markers['data_markercolor'][0])
+             lw=plot_params_and_markers_dict['lw'],
+             color=plot_params_and_markers_dict['data_markercolor'][0])
     ax4.set_xlim(0, (max(t_winpos) + window_size).rescale('ms').magnitude)
-    ax4.set_ylim(plot_params['S_ylim'])
+    ax4.set_ylim(plot_params_and_markers_dict['S_ylim'])
 
     ax4.axhline(joint_suprise_significance, ls='-',
-                color=plot_markers['data_markercolor'][1])
+                color=plot_params_and_markers_dict['data_markercolor'][1])
     ax4.axhline(-joint_suprise_significance, ls='-',
-                color=plot_markers['data_markercolor'][2])
+                color=plot_params_and_markers_dict['data_markercolor'][2])
     ax4.text(t_winpos[30], joint_suprise_significance + 0.3, '$\\alpha +$',
-             color=plot_markers['data_markercolor'][1])
+             color=plot_params_and_markers_dict['data_markercolor'][1])
     ax4.text(t_winpos[30], -joint_suprise_significance - 0.5, '$\\alpha -$',
-             color=plot_markers['data_markercolor'][2])
+             color=plot_params_and_markers_dict['data_markercolor'][2])
 
-    if (plot_params['boolean_vertical_lines']):
+    if (plot_params_and_markers_dict['boolean_vertical_lines']):
         x_line_vertical = MultipleLocator(
-            plot_params['major_tick_width_time']).tick_values(
+            plot_params_and_markers_dict['major_tick_width_time']).tick_values(
             t_start.magnitude, t_stop.magnitude)
         for xc in x_line_vertical:
-            ax4.axvline(xc, lw=plot_params['lw'],
-                        color=plot_params['color_vertical_lines'])
+            ax4.axvline(xc, lw=plot_params_and_markers_dict['lw'],
+                        color=plot_params_and_markers_dict
+                        ['color_vertical_lines'])
 
     ax4.xaxis.set_major_locator(
-        MultipleLocator(plot_params['major_tick_width_time']))
+        MultipleLocator(plot_params_and_markers_dict['major_tick_width_time']))
     ax4.xaxis.set_major_formatter(FormatStrFormatter('%d'))
     ax4.xaxis.set_minor_locator(
-        MultipleLocator(plot_params['major_tick_width_time'] /
-                        (plot_params['number_minor_ticks_time'] + 1)))
+        MultipleLocator(plot_params_and_markers_dict['major_tick_width_time'] /
+                        (plot_params_and_markers_dict
+                         ['number_minor_ticks_time'] + 1)))
     ax4.set_yticks([ue.jointJ(0.99), ue.jointJ(0.5), ue.jointJ(0.01)])
 
-    ax4.set_xlabel('Time [ms]', fontsize=plot_params['fsize'])
+    ax4.set_xlabel('Time [ms]', fontsize=plot_params_and_markers_dict['fsize'])
     ax4.set_yticklabels([alpha + 0.5, alpha, alpha - 0.5])
 
 
 def plot_unitary_events(
         data, joint_suprise_dict, joint_suprise_significance, binsize,
-        window_size, window_step, n_neurons, plot_params_user,
-        plot_markers_user, position):
+        window_size, window_step, n_neurons, position,
+        **plot_params_and_markers_user):
 
     """
     Visualization of the unitary events of the Unitary Event Analysis.
@@ -888,12 +875,10 @@ def plot_unitary_events(
        size of the window step
     n_neurons: integer
         number of Neurons
-    plot_params_user: dictionary
-        plotting parameters from the user
-    plot_markers_user: list of dictionaries
-        marker properties from the user
-    position: position-tupel
-        pos is a three integer-tupel, where the first integer is the number
+    plot_params_and_markers_user: dictionary
+        plotting parameters and marker properties from the user
+    position: tuple
+        pos is a three integer-tuple, where the first integer is the number
         of rows, the second the number of columns, and the third the index
         of the subplot
 
@@ -944,17 +929,14 @@ def plot_unitary_events(
     t_winpos = ue._winpos(t_start, t_stop, window_size, window_step)
     num_tr = len(data)
 
-    # subplot format
-    plot_params = plot_params_default.copy()
-    plot_params.update(plot_params_user)
-    # marker format
-    plot_markers = plot_markers_default.copy()
-    plot_markers.update(plot_markers_user)
+    # subplots format and marker properties
+    plot_params_and_markers_dict = plot_params_and_markers_default.copy()
+    plot_params_and_markers_dict.update(plot_params_and_markers_user)
 
-    if len(plot_params['unit_real_ids']) != n_neurons:
+    if len(plot_params_and_markers_dict['unit_real_ids']) != n_neurons:
         raise ValueError(
             'length of unit_ids should be equal to number of neurons! \n'
-            'Unit_Ids: ' + plot_params[
+            'Unit_Ids: ' + plot_params_and_markers_dict[
                 'unit_real_ids'] + 'ungleich NumOfNeurons: ' + n_neurons)
 
     ax5 = plt.subplot(position[0], position[1], position[2])
@@ -964,9 +946,11 @@ def plot_unitary_events(
             ax5.plot(data_tr[n].rescale('ms').magnitude,
                      numpy.ones_like(data_tr[n].magnitude) *
                      tr + n * (num_tr + 1) + 1,
-                     ls='None', marker=plot_markers['data_symbol'],
-                     markersize=plot_markers['data_markersize'],
-                     color=plot_markers['data_markercolor'])
+                     ls='None', marker=plot_params_and_markers_dict
+                ['data_symbol'],
+                     markersize=plot_params_and_markers_dict['data_markersize']
+                     , color=plot_params_and_markers_dict['data_markercolor']
+                [0])
             sig_idx_win = numpy.where(
                 joint_suprise_dict['Js'] >= joint_suprise_significance)[0]
             if len(sig_idx_win) > 0:
@@ -982,30 +966,35 @@ def plot_unitary_events(
                         numpy.unique(xx) * binsize,
                         numpy.ones_like(numpy.unique(xx)) * tr + n * (
                             num_tr + 1) + 1,
-                        ms=plot_markers['event_markersize'],
-                        marker=plot_markers['event_symbol'], ls='',
-                        markerfacecolor=plot_markers['event_markerfacecolor'],
-                        markeredgecolor=plot_markers['event_markeredgecolor'])
+                        ms=plot_params_and_markers_dict['event_markersize'],
+                        marker=plot_params_and_markers_dict['event_symbol'],
+                        ls='', markerfacecolor=plot_params_and_markers_dict
+                        ['event_markerfacecolor'],
+                        markeredgecolor=plot_params_and_markers_dict
+                        ['event_markeredgecolor'])
 
         if n < n_neurons - 1:
-            ax5.axhline((tr + 2) * (n + 1), lw=plot_params['lw'], color='b')
+            ax5.axhline((tr + 2) * (n + 1), lw=plot_params_and_markers_dict
+            ['lw'], color='b')
     ax5.set_xlim(0, (max(t_winpos) + window_size).rescale('ms').magnitude)
     ax5.set_ylim(0, (tr + 2) * (n + 1) + 1)
 
-    if (plot_params['boolean_vertical_lines']):
+    if (plot_params_and_markers_dict['boolean_vertical_lines']):
         x_line_vertical = MultipleLocator(
-            plot_params['major_tick_width_time']).tick_values(
+            plot_params_and_markers_dict['major_tick_width_time']).tick_values(
             t_start.magnitude, t_stop.magnitude)
         for xc in x_line_vertical:
-            ax5.axvline(xc, lw=plot_params['lw'],
-                        color=plot_params['color_vertical_lines'])
+            ax5.axvline(xc, lw=plot_params_and_markers_dict['lw'],
+                        color=plot_params_and_markers_dict
+                        ['color_vertical_lines'])
 
     ax5.xaxis.set_major_locator(
-        MultipleLocator(plot_params['major_tick_width_time']))
+        MultipleLocator(plot_params_and_markers_dict['major_tick_width_time']))
     ax5.xaxis.set_major_formatter(FormatStrFormatter('%d'))
     ax5.xaxis.set_minor_locator(
-        MultipleLocator(plot_params['major_tick_width_time'] /
-                        (plot_params['number_minor_ticks_time'] + 1)))
+        MultipleLocator(plot_params_and_markers_dict['major_tick_width_time'] /
+                        (plot_params_and_markers_dict
+                         ['number_minor_ticks_time'] + 1)))
     # set y-axis
     y_ticks_list = []
     for yt1 in range(1, n_neurons * num_tr, num_tr + 1):
@@ -1025,16 +1014,17 @@ def plot_unitary_events(
         y_ticks_labels_list += auxiliary_list
 
     ax5.set_yticks(y_ticks_list)
-    ax5.set_yticklabels(y_ticks_labels_list, fontsize=plot_params['fsize'])
+    ax5.set_yticklabels(y_ticks_labels_list,
+                        fontsize=plot_params_and_markers_dict['fsize'])
 
-    ax5.set_xlabel('Time [ms]', fontsize=plot_params['fsize'])
-    ax5.set_ylabel('Trial', fontsize=plot_params['fsize'])
+    ax5.set_xlabel('Time [ms]', fontsize=plot_params_and_markers_dict['fsize'])
+    ax5.set_ylabel('Trial', fontsize=plot_params_and_markers_dict['fsize'])
 
 
 def _checking_user_entries_of_plot_UE(
         data, joint_suprise_dict, joint_suprise_significance, binsize,
-        window_size, window_step, pattern_hash, n_neurons, plot_params_user,
-        plot_markers_user, position):
+        window_size, window_step, n_neurons,
+        plot_params_and_markers_user):
 
     if (not isinstance(data, list) and not isinstance(
             data, numpy.ndarray)):  # sollen weiter Typen erlaubt sein???
@@ -1075,26 +1065,9 @@ def _checking_user_entries_of_plot_UE(
     if (not isinstance(window_step, pq.quantity.Quantity)):
         raise TypeError('window_step must be a quantity scaler/int')
 
-    if (not isinstance(pattern_hash, list)
-            and not isinstance(pattern_hash, numpy.ndarray)):
-        raise TypeError('pattern_hash must be a list (of integers)')
-    else:
-        for i in pattern_hash:
-            if (not isinstance(pattern_hash[i], int)):
-                raise TypeError(
-                    'elements of the pattern_hash list are NOT integers')
-
     if (not isinstance(n_neurons, int)):
         raise TypeError('n_neurons must be an integer')
 
-    if (not isinstance(plot_params_user, dict)):
+    if (not isinstance(plot_params_and_markers_user, dict)):
         raise TypeError('plot_params_user must be a dictionary')
 
-    if ((not isinstance(plot_markers_user, list)) and (
-            not isinstance(plot_markers_user, numpy.ndarray))):
-        raise TypeError("plot_markers_user must be a list")
-    else:
-        for i in plot_markers_user:
-            if (type(plot_markers_user[i] != dict)):
-                raise TypeError('elements of th plot_markers_user list '
-                                'are NOT dictionaries')

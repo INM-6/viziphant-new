@@ -46,15 +46,8 @@ def create_target_plot_UE_full_analysis():
     plot_unitary_event_full_analysis(
         SPIKETRAINS, UE, ue.jointJ(0.05), binsize=5 * pq.ms,
         window_size=100 * pq.ms, window_step=10 * pq.ms, n_neurons=2,
-        plot_params_user={'fsize': 14},
-        plot_markers_user=[{},
-                           {'data_markercolor': ("r", "b")},
-                           {},
-                           {'data_markercolor': ("m", "g")},
-                           {'data_markercolor': ("k", "b", "r")},
-                           {}],
-        position=((6, 1, 1), (6, 1, 2), (6, 1, 3), (6, 1, 4), (6, 1, 5),
-                  (6, 1, 6)))
+        position = ((6, 1, 1), (6, 1, 2), (6, 1, 3), (6, 1, 4), (6, 1, 5),
+                (6, 1, 6)), plot_params_and_markers_user={'fsize': 14})
     target_image_plot_UE_full_analysis.savefig(
         PLOT_UE_FULL_ANALYSIS_TARGET_PATH)
 
@@ -62,8 +55,8 @@ def create_target_spike_events():
     target_image_plot_spike_events = plt.figure("2", figsize=(20, 20))
     plot_spike_events(
         SPIKETRAINS, window_size=100 * pq.ms, window_step=10 * pq.ms,
-        n_neurons=2, plot_params_user={'fsize': 14}, plot_markers_user=[],
-        position=(1, 1, 1))
+        n_neurons=2, position=(1, 1, 1),
+        plot_params_and_markers_user={'fsize': 14})
     target_image_plot_spike_events.savefig(PLOT_SPIKE_EVENTS_TARGET_PATH)
 
 def create_target_spike_rates():
@@ -71,9 +64,7 @@ def create_target_spike_rates():
     plot_spike_rates(
         SPIKETRAINS, UE, window_size=100 * pq.ms,
         window_step=10 * pq.ms, n_neurons=2,
-        plot_params_user={'fsize': 14},
-        plot_markers_user={'data_markercolor': ("r", "b")},
-        position=(1, 1, 1))
+        position=(1, 1, 1), plot_params_and_marker_user={'fsize': 14})
     target_image_plot_spike_rates.savefig(PLOT_SPIKE_RATES_TARGET_PATH)
 
 def create_target_coincidence_events():
@@ -81,9 +72,8 @@ def create_target_coincidence_events():
         "4", figsize=(20, 20))
     plot_coincidence_events(
         SPIKETRAINS, UE, ue.jointJ(0.05), window_size=100 * pq.ms,
-        window_step=10 * pq.ms, n_neurons=2,
-        plot_params_user={'fsize': 14}, plot_markers_user={},
-        position=(1, 1, 1))
+        window_step=10 * pq.ms, n_neurons=2, position=(1, 1, 1),
+        plot_params_and_markers_user={'fsize': 14})
     target_image_plot_coincidence_events.\
         savefig(PLOT_COINCIDENCE_EVENTS_TARGET_PATH)
 
@@ -92,10 +82,8 @@ def create_target_coincidence_rates():
         "5", figsize=(20, 20))
     plot_coincidence_rates(
         SPIKETRAINS, UE, window_size=100 * pq.ms,
-        window_step=10 * pq.ms, n_neurons=2,
-        plot_params_user={'fsize': 14},
-        plot_markers_user={'data_markercolor': ("m", "g")},
-        position=(1, 1, 1))
+        window_step=10 * pq.ms, n_neurons=2, position=(1, 1, 1),
+        plot_params_and_markers_user={'fsize': 14})
     target_image_plot_coincidences_rates.savefig(
         PLOT_COINCIDENCE_RATES_TARGET_PATH)
 
@@ -104,10 +92,8 @@ def create_target_statistical_significance():
         "6", figsize=(20, 20))
     plot_statistical_significance(
         SPIKETRAINS, UE, ue.jointJ(0.05), window_size=100 * pq.ms,
-        window_step=10 * pq.ms, n_neurons=2,
-        plot_params_user={'fsize': 14},
-        plot_markers_user={'data_markercolor': ("k", "b", "r")},
-        position=(1, 1, 1))
+        window_step=10 * pq.ms, n_neurons=2, position=(1, 1, 1),
+        plot_params_and_markers_user={'fsize': 14})
     target_image_plot_statistical_significance.savefig(
         PLOT_STATISTICAL_SIGNIFICANCE_TARGET_PATH)
 
@@ -117,7 +103,6 @@ def create_target_unitary_events():
     plot_unitary_events(
         SPIKETRAINS, UE, ue.jointJ(0.05), binsize=5 * pq.ms,
         window_size=100 * pq.ms, window_step=10 * pq.ms, n_neurons=2,
-        plot_params_user={'fsize': 14}, plot_markers_user={},
-        position=(1, 1, 1))
+        position=(1, 1, 1), plot_params_and_markers_user={'fsize': 14})
     target_image_plot_unitary_events.savefig(
         PLOT_UNITARY_EVENTS_TARGET_PATH)
