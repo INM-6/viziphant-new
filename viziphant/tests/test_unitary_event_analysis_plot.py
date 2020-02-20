@@ -2,7 +2,7 @@ import tempfile
 import unittest
 
 import numpy as np
-from viziphant.unitary_event_analysis_PLOT import \
+from viziphant.unitary_event_analysis_plot import \
     plot_unitary_event_full_analysis, plot_spike_events, plot_spike_rates, \
     plot_coincidence_events, plot_coincidence_rates, \
     plot_statistical_significance, plot_unitary_events
