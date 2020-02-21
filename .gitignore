@@ -69,7 +69,7 @@ instance/
 .scrapy
 
 # Sphinx documentation
-docs/_build/
+doc/_build/
 
 # PyBuilder
 target/
@@ -130,3 +130,13 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# manually created target images for unit_tests
+viziphant/tests/target_images/
+*.h5
+
+# ignored folders
+ignored/
+
+# images
+*.png

@@ -10,14 +10,14 @@ with open(os.path.join(os.path.dirname(__file__),
 
 with open("README.md") as f:
     long_description = f.read()
-with open('requirements.txt') as fp:
+with open('requirements/requirements.txt') as fp:
     install_requires = fp.read()
 
 
 setup(
     name="viziphant",
     version=version,
-    packages=['viziphant', 'viziphant.test'],
+    packages=['viziphant', 'viziphant.tests'],
     include_package_data=True,
     install_requires=install_requires,
     author="Viziphant authors and contributors",

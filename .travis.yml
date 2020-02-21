@@ -1,0 +1,65 @@
+dist: xenial
+language: python
+sudo: false
+
+addons:
+   apt:
+     update: true
+
+
+matrix:
+  include:
+    - name: "conda 2.7"
+      python: 2.7
+      env: DISTRIB="conda"
+
+    - name: "pip 2.7"
+      python: 2.7
+      env: DISTRIB="pip"
+
+    - name: "pip 3.5"
+      python: 3.5
+      env: DISTRIB="pip"
+
+    - name: "conda 3.7"
+      python: 3.7
+      env: DISTRIB="conda"
+
+    - name: "conda 3.8"
+      python: 3.8
+      env: DISTRIB="conda"
+
+    - name: "pip 3.8"
+      python: 3.8
+      env: DISTRIB="pip"
+
+install:
+  - if [[ "${DISTRIB}" == "conda" ]];
+    # https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/use-conda-with-travis-ci.html
+    then
+      if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
+        wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh;
+      else
+        wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+      fi
+      bash miniconda.sh -b -p $HOME/miniconda
+      source "$HOME/miniconda/etc/profile.d/conda.sh"
+      conda config --set always_yes yes;
+      conda update conda;
+      conda info -a;
+      conda env create -f requirements/environment.yml;
+      pip list;
+    else
+      pip install -r requirements/requirements.txt;
+    fi
+
+  - pip -V
+  - pip install coverage coveralls nose
+  - python setup.py install
+  - pip list
+  - python --version
+
+script:
+  nosetests --with-coverage --cover-package=viziphant
+
+after_success: coveralls || echo "coveralls failed"
