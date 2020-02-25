@@ -3,6 +3,7 @@ import numpy
 import quantities as pq
 import matplotlib.pyplot as plt
 from matplotlib.ticker import (MultipleLocator, FormatStrFormatter)
+
 import elephant.unitary_event_analysis as ue
 
 # TODO: remember: *args, unpacking operator * returns a tuple not a list
@@ -260,7 +261,7 @@ def plot_spike_events(
     t_start = data[0][0].t_start
     t_stop = data[0][0].t_stop
     t_winpos = ue._winpos(t_start, t_stop, window_size, window_step)
-    num_tr = len(data)
+    n_trail = len(data)
 
     # subplots format and marker properties
     plot_params_and_markers_dict = plot_params_and_markers_default.copy()
@@ -269,22 +270,23 @@ def plot_spike_events(
     ax0 = plt.subplot(position[0], position[1], position[2])
     ax0.set_title('Spike Events')
     for n in range(n_neurons):
-        for tr, data_tr in enumerate(data):
-            ax0.plot(data_tr[n].rescale('ms').magnitude,
-                     numpy.ones_like(data_tr[n].magnitude) * tr + n * (
-                num_tr + 1) + 1, ls='none',
+        for trial, data_trail in enumerate(data):
+            ax0.plot(data_trail[n].rescale('ms').magnitude,
+                     numpy.ones_like(data_trail[n].magnitude) * trial + n * (
+                n_trail + 1) + 1, ls='none',
                 marker=plot_params_and_markers_dict['data_symbol'],
                 color=plot_params_and_markers_dict['data_markercolor'][0],
                 markersize=plot_params_and_markers_dict['data_markersize'])
         if n < n_neurons - 1:
-            ax0.axhline((tr + 2) * (n + 1),
+            ax0.axhline((trial + 2) * (n + 1),
                         lw=plot_params_and_markers_dict['lw'], color='b')
 
-    ax0.set_xlim(0, (max(t_winpos) + window_size).rescale(
-        'ms').magnitude)  # better minimum
-    ax0.set_ylim(0, (tr + 2) * (n + 1) + 1)
+    ax0.set_xlim((min(t_winpos) - window_size).rescale('ms').magnitude,
+                 (max(t_winpos) + window_size).rescale('ms').magnitude)
+    # TODO: better minimum for set_xlim -> Done? oder statt -window_size, 0
+    ax0.set_ylim(0, (trial + 2) * (n + 1) + 1)
 
-    if (plot_params_and_markers_dict['boolean_vertical_lines']):
+    if plot_params_and_markers_dict['boolean_vertical_lines']:
         x_line_vertical = MultipleLocator(
             plot_params_and_markers_dict['major_tick_width_time']).tick_values(
             t_start.magnitude, t_stop.magnitude)
@@ -302,15 +304,15 @@ def plot_spike_events(
                          ['number_minor_ticks_time'] + 1)))
     # set y-axis
     y_ticks_list = []
-    for yt1 in range(1, n_neurons * num_tr, num_tr + 1):
+    for yt1 in range(1, n_neurons * n_trail, n_trail + 1):
         y_ticks_list.append(yt1)
     for n in range(n_neurons):
-        for yt2 in range(n * (num_tr + 1) + 15, (n + 1) * num_tr, 15):
+        for yt2 in range(n * (n_trail + 1) + 15, (n + 1) * n_trail, 15):
             y_ticks_list.append(yt2)
     y_ticks_list.sort()
 
     y_ticks_labels_list = [1]
-    number_of_y_ticks_per_neuron = math.floor(num_tr / 15)
+    number_of_y_ticks_per_neuron = math.floor(n_trail / 15)
     for i in range(number_of_y_ticks_per_neuron):
         y_ticks_labels_list.append((i + 1) * 15)
 
@@ -323,8 +325,15 @@ def plot_spike_events(
                         fontsize=plot_params_and_markers_dict['fsize'])
 
     x_lim = ax0.get_xlim()
-    ax0.text(x_lim[1], num_tr * 2 + 7, 'Neuron 2')
-    ax0.text(x_lim[1], -12, 'Neuron 1')
+    # # First version
+    # ax0.text(x_lim[1], n_trail * 2 + 7, 'Neuron 2')
+    # ax0.text(x_lim[1], -12, 'Neuron 1')
+    # TODO: get review-critic for alternativ & add if it is good to
+    #  coincidence_events and unitary_events
+    # alternative for variable n_neuron (>2):
+    for n in range(n_neurons):
+        n_th_neuron = 'Neuron ' + (n+1).__str__()
+        ax0.text(x_lim[1] + 20, n * (n_trail +1), n_th_neuron)
 
     ax0.set_xlabel('Time [ms]', fontsize=plot_params_and_markers_dict['fsize'])
     ax0.set_ylabel('Trial', fontsize=plot_params_and_markers_dict['fsize'])
@@ -409,6 +418,7 @@ def plot_spike_rates(
 
     ax1 = plt.subplot(position[0], position[1], position[2])
     ax1.set_title('Spike Rates')
+    max_val_psth = 0
     for n in range(n_neurons):
         ax1.plot(t_winpos + window_size / 2.,
                  joint_suprise_dict['rate_avg'][:, n].rescale('Hz'),
@@ -417,11 +427,19 @@ def plot_spike_rates(
                  color=plot_params_and_markers_dict['data_markercolor'][n],
                  lw=plot_params_and_markers_dict['lw'])
 
-    ax1.set_xlim(0, (max(t_winpos) + window_size).rescale('ms').magnitude)
-    max_val_psth = 40
+        print("max_val_psth (searching): ", max_val_psth)
+        if max(joint_suprise_dict['rate_avg'][:, n]) > \
+                max_val_psth:
+            max_val_psth = max(joint_suprise_dict['rate_avg'][:, n])
+
+    ax1.set_xlim((min(t_winpos) - window_size).rescale('ms').magnitude,
+                 (max(t_winpos) + window_size).rescale('ms').magnitude)
+    # peristimulus time histogram = psth
+    # TODO: make max_val_psth variable -> Done ?
+    max_val_psth = max_val_psth.rescale('Hz').magnitude
     ax1.set_ylim(0, max_val_psth)
 
-    if (plot_params_and_markers_dict['boolean_vertical_lines']):
+    if plot_params_and_markers_dict['boolean_vertical_lines']:
         x_line_vertical = MultipleLocator(
             plot_params_and_markers_dict['major_tick_width_time']).tick_values(
             t_start.magnitude, t_stop.magnitude)
@@ -550,10 +568,11 @@ def plot_coincidence_events(
         if n < n_neurons - 1:
             ax2.axhline((tr + 2) * (n + 1),
                         lw=plot_params_and_markers_dict['lw'], color='b')
+    ax2.set_xlim((min(t_winpos) - window_size).rescale('ms').magnitude,
+                 (max(t_winpos) + window_size).rescale('ms').magnitude)
     ax2.set_ylim(0, (tr + 2) * (n + 1) + 1)
-    ax2.set_xlim(0, (max(t_winpos) + window_size).rescale('ms').magnitude)
 
-    if (plot_params_and_markers_dict['boolean_vertical_lines']):
+    if plot_params_and_markers_dict['boolean_vertical_lines']:
         x_line_veritcal = MultipleLocator(
             plot_params_and_markers_dict['major_tick_width_time']).tick_values(
             t_start.magnitude, t_stop.magnitude)
@@ -694,9 +713,10 @@ def plot_coincidence_rates(
                  window_size.rescale('s').magnitude * num_tr),
              label='expected', lw=plot_params_and_markers_dict['lw'],
              color=plot_params_and_markers_dict['data_markercolor'][1])
-    ax3.set_xlim(0, (max(t_winpos) + window_size).rescale('ms').magnitude)
+    ax3.set_xlim((min(t_winpos) - window_size).rescale('ms').magnitude,
+                 (max(t_winpos) + window_size).rescale('ms').magnitude)
 
-    if (plot_params_and_markers_dict['boolean_vertical_lines']):
+    if plot_params_and_markers_dict['boolean_vertical_lines']:
         x_line_vertical = MultipleLocator(
             plot_params_and_markers_dict['major_tick_width_time']).tick_values(
             t_start.magnitude, t_stop.magnitude)
@@ -814,7 +834,8 @@ def plot_statistical_significance(
     ax4.plot(t_winpos + window_size / 2., joint_suprise_dict['Js'],
              lw=plot_params_and_markers_dict['lw'],
              color=plot_params_and_markers_dict['data_markercolor'][0])
-    ax4.set_xlim(0, (max(t_winpos) + window_size).rescale('ms').magnitude)
+    ax4.set_xlim((min(t_winpos) - window_size).rescale('ms').magnitude,
+                 (max(t_winpos) + window_size).rescale('ms').magnitude)
     ax4.set_ylim(plot_params_and_markers_dict['S_ylim'])
 
     ax4.axhline(joint_suprise_significance, ls='-',
@@ -826,7 +847,7 @@ def plot_statistical_significance(
     ax4.text(t_winpos[30], -joint_suprise_significance - 0.5, '$\\alpha -$',
              color=plot_params_and_markers_dict['data_markercolor'][2])
 
-    if (plot_params_and_markers_dict['boolean_vertical_lines']):
+    if plot_params_and_markers_dict['boolean_vertical_lines']:
         x_line_vertical = MultipleLocator(
             plot_params_and_markers_dict['major_tick_width_time']).tick_values(
             t_start.magnitude, t_stop.magnitude)
@@ -976,10 +997,11 @@ def plot_unitary_events(
         if n < n_neurons - 1:
             ax5.axhline((tr + 2) * (n + 1), lw=plot_params_and_markers_dict
             ['lw'], color='b')
-    ax5.set_xlim(0, (max(t_winpos) + window_size).rescale('ms').magnitude)
+    ax5.set_xlim((min(t_winpos) - window_size).rescale('ms').magnitude,
+                 (max(t_winpos) + window_size).rescale('ms').magnitude)
     ax5.set_ylim(0, (tr + 2) * (n + 1) + 1)
 
-    if (plot_params_and_markers_dict['boolean_vertical_lines']):
+    if plot_params_and_markers_dict['boolean_vertical_lines']:
         x_line_vertical = MultipleLocator(
             plot_params_and_markers_dict['major_tick_width_time']).tick_values(
             t_start.magnitude, t_stop.magnitude)
@@ -1030,7 +1052,7 @@ def _checking_user_entries_of_plot_UE(
             data, numpy.ndarray)):  # sollen weiter Typen erlaubt sein???
         raise TypeError('data must be a list (of spiketrains)')
 
-    if (not isinstance(joint_suprise_dict, dict)):
+    if not isinstance(joint_suprise_dict, dict):
         raise TypeError('joint_suprise_dict must be a dictionary')
     else:  # checking if all keys are correct
         if "Js" not in joint_suprise_dict:
