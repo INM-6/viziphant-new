@@ -5,7 +5,8 @@ import numpy as np
 from viziphant.unitary_event_analysis_plot import \
     plot_unitary_event_full_analysis, plot_spike_events, plot_spike_rates, \
     plot_coincidence_events, plot_coincidence_rates, \
-    plot_statistical_significance, plot_unitary_events
+    plot_statistical_significance, plot_unitary_events, \
+    plot_unitary_events_simplified
 import viziphant.tests.create_targets.\
     create_target_unitary_event_analysis_plot as create_target
 import quantities as pq
@@ -77,6 +78,11 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
         cls.path_target_image_plot_unitary_events = \
             create_target.PLOT_UNITARY_EVENTS_TARGET_PATH
 
+        # create 8.figure with 1 subplot with plot_unitary_events_simplified():
+        create_target.create_target_unitary_events_simplified()
+        cls.path_target_image_plot_unitary_events_simplified = \
+            create_target.PLOT_UNITARY_EVENTS_SIMPLIFIED_TARGET_PATH
+
     def test_plot_unitary_event_full_analysis(self):
         # create result image
         self.result_image_plot_UE_full_analysis = plt.figure("1.1",
@@ -84,8 +90,8 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
         plot_unitary_event_full_analysis(
             self.spiketrains, self.UE, ue.jointJ(0.05), binsize=5 * pq.ms,
             window_size=100 * pq.ms, window_step=10 * pq.ms, n_neurons=2,
-            position=((6, 1, 1), (6, 1, 2), (6, 1, 3), (6, 1, 4), (6, 1, 5),
-                      (6, 1, 6)), plot_params_and_markers_user={'fsize': 14})
+            position=((7, 1, 1), (7, 1, 2), (7, 1, 3), (7, 1, 4), (7, 1, 5),
+                      (7, 1, 6)), plot_params_and_markers_user={'fsize': 14})
         self.path_result_image_plot_UE_full_analysis = \
             tempfile.mkstemp(suffix=".png")[1]
         self.result_image_plot_UE_full_analysis.savefig(
@@ -203,6 +209,23 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
         self.assertTrue(compare_images(
             self.path_target_image_plot_unitary_events,
             self.path_result_image_plot_unitary_events))
+
+    def test_plot_unitary_events_simplified(self):
+        # create result image
+        self.result_image_plot_unitary_events_simplified = plt.figure("7.1",
+                                                           figsize=(20, 20))
+        plot_unitary_events_simplified(
+            self.spiketrains, self.UE, ue.jointJ(0.05), binsize=5 * pq.ms,
+            window_size=100 * pq.ms, window_step=10 * pq.ms, n_neurons=2)
+        self.path_result_image_plot_unitary_events_simplified = \
+            tempfile.mkstemp(suffix=".png")[1]
+        self.result_image_plot_unitary_events_simplified.savefig(
+            self.path_result_image_plot_unitary_events_simplified)
+
+        # assertion
+        self.assertTrue(compare_images(
+            self.path_target_image_plot_unitary_events_simplified,
+            self.path_result_image_plot_unitary_events_simplified))
 
 
 if __name__ == '__main__':

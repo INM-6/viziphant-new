@@ -213,6 +213,10 @@ def plot_unitary_event_full_analysis(
         window_size, window_step, n_neurons, default_positions[
             'position_unitary_events'], **plot_params_and_markers_dict)
 
+    plot_unitary_events_simplified(
+        data, joint_suprise_dict, joint_suprise_significance, binsize,
+        window_size, window_step, n_neurons)
+
 
 def plot_spike_events(
         data, window_size, window_step, n_neurons, position,
@@ -295,7 +299,6 @@ def plot_spike_events(
 
     # TODO: get review for setting default_position values -> done for spike
     #  events, rest is left
-    print(position)
     # default-values for row, column  and index of the subplot-position
     default_position = {'position_row': 1, 'position_column': 1,
                         'position_index_subplot': 1}
@@ -1102,6 +1105,49 @@ def plot_unitary_events(
 
     ax5.set_xlabel('Time [ms]', fontsize=plot_params_and_markers_dict['fsize'])
     ax5.set_ylabel('Trial', fontsize=plot_params_and_markers_dict['fsize'])
+
+def plot_unitary_events_simplified(
+        data, joint_suprise_dict, joint_suprise_significance, binsize,
+        window_size, window_step, n_neurons):
+    print("plotting unitary_events_simplified ...")
+    t_start = data[0][0].t_start
+    t_stop = data[0][0].t_stop
+    t_winpos = ue._winpos(t_start, t_stop, window_size, window_step)
+    n_trail = len(data)
+    ax6 = plt.subplot(7, 1, 7)
+    ax6.set_title('Unitary Events (simplified)')
+    for n in range(n_neurons):
+        for tr, data_tr in enumerate(data):
+            ax6.plot(data_tr[n].rescale('ms').magnitude,
+                     numpy.ones_like(data_tr[n].magnitude) *
+                     tr + n * (n_trail + 1) + 1,
+                     ls='None', marker='.', markersize=0.5, color="k")
+            sig_idx_win = numpy.where(
+                joint_suprise_dict['Js'] >= joint_suprise_significance)[0]
+            if len(sig_idx_win) > 0:
+                # TODO: rename x and xx to be self-explaining
+                x = numpy.unique(
+                    joint_suprise_dict['indices']['trial' + str(tr)])
+                if len(x) > 0:
+                    xx = []
+                    for j in sig_idx_win:
+                        xx = numpy.append(xx, x[numpy.where(
+                            (x * binsize >= t_winpos[j]) &
+                            (x * binsize < t_winpos[j] + window_size))])
+                    ax6.plot(
+                        numpy.unique(xx) * binsize,
+                        numpy.ones_like(numpy.unique(xx)) * tr + n * (
+                                n_trail + 1) + 1,
+                        ms=5, marker='s', ls='', markeredgecolor='r')
+        # horizontal separation line
+        if n < n_neurons - 1:
+            ax6.axhline((tr + 2) * (n + 1))
+
+        ax6.set_xlim((min(t_winpos) - window_size).rescale('ms').magnitude,
+                     (max(t_winpos) + window_size).rescale('ms').magnitude)
+        ax6.set_ylim(0, (tr + 2) * (n + 1) + 1)
+    ax6.set_xlabel('Time [ms]')
+    ax6.set_ylabel('Trial')
 
 
 def _checking_user_entries_of_plot_ue(

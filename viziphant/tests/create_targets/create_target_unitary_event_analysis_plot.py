@@ -9,7 +9,8 @@ import elephant.unitary_event_analysis as ue
 from viziphant.unitary_event_analysis_plot import \
     plot_unitary_event_full_analysis, plot_spike_events, plot_spike_rates, \
     plot_coincidence_events, plot_coincidence_rates, \
-    plot_statistical_significance, plot_unitary_events
+    plot_statistical_significance, plot_unitary_events, \
+    plot_unitary_events_simplified
 
 target_images_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)),
                                  "target_images")
@@ -27,6 +28,8 @@ PLOT_STATISTICAL_SIGNIFICANCE_TARGET_PATH = os.path.join(
     target_images_dir, "target_plot_statistical_significance.png")
 PLOT_UNITARY_EVENTS_TARGET_PATH = os.path.join(
     target_images_dir, "target_plot_unitary_events.png")
+PLOT_UNITARY_EVENTS_SIMPLIFIED_TARGET_PATH = os.path.join(
+    target_images_dir, "target_plot_unitary_events_simplified.png")
 
 # aus Jupyter-Notebook
 # Download data
@@ -48,8 +51,8 @@ def create_target_plot_ue_full_analysis():
     plot_unitary_event_full_analysis(
         SPIKETRAINS, UE, ue.jointJ(0.05), binsize=5 * pq.ms,
         window_size=100 * pq.ms, window_step=10 * pq.ms, n_neurons=2,
-        position=((6, 1, 1), (6, 1, 2), (6, 1, 3), (6, 1, 4), (6, 1, 5),
-                  (6, 1, 6)), plot_params_and_markers_user={'fsize': 14})
+        position=((7, 1, 1), (7, 1, 2), (7, 1, 3), (7, 1, 4), (7, 1, 5),
+                  (7, 1, 6)), plot_params_and_markers_user={'fsize': 14})
     target_image_plot_ue_full_analysis.savefig(
         PLOT_UE_FULL_ANALYSIS_TARGET_PATH)
 
@@ -113,3 +116,13 @@ def create_target_unitary_events():
         position=(1, 1, 1), plot_params_and_markers_user={'fsize': 14})
     target_image_plot_unitary_events.savefig(
         PLOT_UNITARY_EVENTS_TARGET_PATH)
+
+
+def create_target_unitary_events_simplified():
+    target_image_plot_unitary_events_simplified = plt.figure(
+        "7", figsize=(20, 20))
+    plot_unitary_events_simplified(
+        SPIKETRAINS, UE, ue.jointJ(0.05), binsize=5 * pq.ms,
+        window_size=100 * pq.ms, window_step=10 * pq.ms, n_neurons=2)
+    target_image_plot_unitary_events_simplified.savefig(
+        PLOT_UNITARY_EVENTS_SIMPLIFIED_TARGET_PATH)
