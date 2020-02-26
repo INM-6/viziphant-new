@@ -88,7 +88,7 @@ def plot_unitary_event_full_analysis(
         number of Neurons
     plot_params_and_markers_user: dictionary
         plotting parameters and marker properties from the user
-    position: list
+    position: list of position tuples
         (posSpikeEvents(c,r,i), posSpikeRates(c,r,i),
          posCoincidenceEvents(c,r,i), posCoincidenceRates(c,r,i),
         posStatisticalSignificance(c,r,i), posUnitaryEvents(c,r,i))
@@ -162,30 +162,56 @@ def plot_unitary_event_full_analysis(
     plt.subplots_adjust(hspace=plot_params_and_markers_dict['hspace'],
                         wspace=plot_params_and_markers_dict['wspace'])
 
+    # default positions of the subplots
+    default_positions = {
+        'position_spike_events': (6, 1, 1),
+        'position_spike_rates': (6, 1, 2),
+        'position_coincidence_events': (6, 1, 3),
+        'position_coincidence_rates': (6, 1, 4),
+        'position_statistical_significance': (6, 1, 5),
+        'position_unitary_events': (6, 1, 6)
+    }
+
+
+    # TODO: add checking length of position to checking- user entries -> Done
+    # print("befor-for")
+    # print(position, range(len(position)))
+    key_list = default_positions.keys()
+    for pos_user, key in zip(position, key_list):
+        # print("default_positions[i]: (vor)", default_positions[i])
+        default_positions[key] = pos_user
+        # print("default_positions: (vor)", default_positions[i])
+    # print("after-for")
+
     plot_spike_events(
-        data, window_size, window_step, n_neurons, position[0],
-        **plot_params_and_markers_dict)
+        data, window_size, window_step, n_neurons, default_positions[
+            'position_spike_events'], **plot_params_and_markers_dict)
 
     plot_spike_rates(
         data, joint_suprise_dict, window_size, window_step, n_neurons,
-        position[1], **plot_params_and_markers_dict)
+        default_positions['position_spike_rates'],
+        **plot_params_and_markers_dict)
 
     plot_coincidence_events(
         data, joint_suprise_dict, binsize, window_size, window_step, n_neurons,
-        position[2], **plot_params_and_markers_dict)
+        default_positions['position_coincidence_events'],
+        **plot_params_and_markers_dict)
 
     plot_coincidence_rates(
         data, joint_suprise_dict, window_size, window_step, n_neurons,
-        position[3], **plot_params_and_markers_dict)
+        default_positions['position_coincidence_rates'],
+        **plot_params_and_markers_dict)
 
     plot_statistical_significance(
         data, joint_suprise_dict, joint_suprise_significance, window_size,
-        window_step, n_neurons, position[4], **plot_params_and_markers_dict)
+        window_step, n_neurons, default_positions[
+            'position_statistical_significance'],
+        **plot_params_and_markers_dict)
 
     plot_unitary_events(
         data, joint_suprise_dict, joint_suprise_significance, binsize,
-        window_size, window_step, n_neurons, position[5],
-        **plot_params_and_markers_dict)
+        window_size, window_step, n_neurons, default_positions[
+            'position_unitary_events'], **plot_params_and_markers_dict)
 
 
 def plot_spike_events(
@@ -267,7 +293,20 @@ def plot_spike_events(
     plot_params_and_markers_dict = plot_params_and_markers_default.copy()
     plot_params_and_markers_dict.update(plot_params_and_markers_user)
 
-    ax0 = plt.subplot(position[0], position[1], position[2])
+    # TODO: get review for setting default_position values -> done for spike
+    #  events, rest is left
+    print(position)
+    # default-values for row, column  and index of the subplot-position
+    default_position = {'position_row': 1, 'position_column': 1,
+                        'position_index_subplot': 1}
+    key_list = default_position.keys()
+    for pos_user, key in zip(position, key_list):
+        default_position[key] = pos_user
+
+    ax0 = plt.subplot(default_position['position_row'],
+                      default_position['position_column'],
+                      default_position['position_index_subplot'])
+
     ax0.set_title('Spike Events')
     for n in range(n_neurons):
         for trial, data_trail in enumerate(data):
@@ -302,24 +341,30 @@ def plot_spike_events(
         MultipleLocator(plot_params_and_markers_dict['major_tick_width_time'] /
                         (plot_params_and_markers_dict
                          ['number_minor_ticks_time'] + 1)))
+
     # set y-axis
     y_ticks_list = []
+    # finding y-tick position for trail no.1
     for yt1 in range(1, n_neurons * n_trail, n_trail + 1):
         y_ticks_list.append(yt1)
+    # finding y-tick position for trail interval of 15
     for n in range(n_neurons):
         for yt2 in range(n * (n_trail + 1) + 15, (n + 1) * n_trail, 15):
             y_ticks_list.append(yt2)
     y_ticks_list.sort()
 
     y_ticks_labels_list = [1]
+    # setting y-tick interval to 15 trails
     number_of_y_ticks_per_neuron = math.floor(n_trail / 15)
     for i in range(number_of_y_ticks_per_neuron):
         y_ticks_labels_list.append((i + 1) * 15)
 
     auxiliary_list = y_ticks_labels_list
+    # adding n_neuron times the y_ticks_labels_list to itself, so that each
+    # neuron has the same y_ticks_labels
     for i in range(n_neurons - 1):
         y_ticks_labels_list += auxiliary_list
-    # print(yticks_list)
+
     ax0.set_yticks(y_ticks_list)
     ax0.set_yticklabels(y_ticks_labels_list,
                         fontsize=plot_params_and_markers_dict['fsize'])
@@ -332,7 +377,7 @@ def plot_spike_events(
     #  coincidence_events and unitary_events
     # alternative for variable n_neuron (>2):
     for n in range(n_neurons):
-        n_th_neuron = 'Neuron ' + (n+1).__str__()
+        n_th_neuron = 'Neuron ' + str(n+1)
         ax0.text(x_lim[1] + 20, n * (n_trail + 1), n_th_neuron)
 
     ax0.set_xlabel('Time [ms]', fontsize=plot_params_and_markers_dict['fsize'])
@@ -418,6 +463,8 @@ def plot_spike_rates(
 
     ax1 = plt.subplot(position[0], position[1], position[2])
     ax1.set_title('Spike Rates')
+    # initialize max_val_psth, psth = peristimulu time histogram
+    # TODO: make max_val_psth variable -> Done ?
     max_val_psth = 0
     for n in range(n_neurons):
         ax1.plot(t_winpos + window_size / 2.,
@@ -427,15 +474,14 @@ def plot_spike_rates(
                  color=plot_params_and_markers_dict['data_markercolor'][n],
                  lw=plot_params_and_markers_dict['lw'])
 
-        print("max_val_psth (searching): ", max_val_psth)
+        # print("max_val_psth (searching): ", max_val_psth)
         if max(joint_suprise_dict['rate_avg'][:, n]) > \
                 max_val_psth:
             max_val_psth = max(joint_suprise_dict['rate_avg'][:, n])
 
     ax1.set_xlim((min(t_winpos) - window_size).rescale('ms').magnitude,
                  (max(t_winpos) + window_size).rescale('ms').magnitude)
-    # peristimulus time histogram = psth
-    # TODO: make max_val_psth variable -> Done ?
+
     max_val_psth = max_val_psth.rescale('Hz').magnitude
     ax1.set_ylim(0, max_val_psth)
 
@@ -538,7 +584,7 @@ def plot_coincidence_events(
     t_start = data[0][0].t_start
     t_stop = data[0][0].t_stop
     t_winpos = ue._winpos(t_start, t_stop, window_size, window_step)
-    num_tr = len(data)
+    n_trail = len(data)
 
     # subplots format and marker properties
     plot_params_and_markers_dict = plot_params_and_markers_default.copy()
@@ -550,7 +596,7 @@ def plot_coincidence_events(
         for tr, data_tr in enumerate(data):
             ax2.plot(data_tr[n].rescale('ms').magnitude,
                      numpy.ones_like(data_tr[n].magnitude) *
-                     tr + n * (num_tr + 1) + 1, ls='None',
+                     tr + n * (n_trail + 1) + 1, ls='None',
                      marker=plot_params_and_markers_dict['data_symbol'],
                      markersize=plot_params_and_markers_dict[
                          'data_markersize'], color=
@@ -559,7 +605,7 @@ def plot_coincidence_events(
                 joint_suprise_dict['indices']['trial' + str(tr)]) * binsize,
                 numpy.ones_like(numpy.unique(
                     joint_suprise_dict['indices']['trial' + str(tr)]))
-                * tr + n * (num_tr + 1) + 1,
+                * tr + n * (n_trail + 1) + 1,
                 ls='', ms=plot_params_and_markers_dict['event_markersize'],
                 marker=plot_params_and_markers_dict['event_symbol'],
                 markerfacecolor=plot_params_and_markers_dict
@@ -591,21 +637,27 @@ def plot_coincidence_events(
                          ['number_minor_ticks_time'] + 1)))
     # set y-axis
     y_ticks_list = []
-    for yt1 in range(1, n_neurons * num_tr, num_tr + 1):
+    # finding y-tick position for trail no.1
+    for yt1 in range(1, n_neurons * n_trail, n_trail + 1):
         y_ticks_list.append(yt1)
+    # finding y-tick position for trail interval of 15
     for n in range(n_neurons):
-        for yt2 in range(n * (num_tr + 1) + 15, (n + 1) * num_tr, 15):
+        for yt2 in range(n * (n_trail + 1) + 15, (n + 1) * n_trail, 15):
             y_ticks_list.append(yt2)
     y_ticks_list.sort()
 
     y_ticks_labels_list = [1]
-    number_of_y_ticks_per_neuron = math.floor(num_tr / 15)
+    # setting y-tick interval to 15 trails
+    number_of_y_ticks_per_neuron = math.floor(n_trail / 15)
     for i in range(number_of_y_ticks_per_neuron):
         y_ticks_labels_list.append((i + 1) * 15)
 
     auxiliary_list = y_ticks_labels_list
+    # adding n_neuron times the y_ticks_labels_list to itself, so that each
+    # neuron has the same y_ticks_labels
     for i in range(n_neurons - 1):
         y_ticks_labels_list += auxiliary_list
+
     ax2.set_yticks(y_ticks_list)
     ax2.set_yticklabels(y_ticks_labels_list,
                         fontsize=plot_params_and_markers_dict['fsize'])
@@ -690,7 +742,7 @@ def plot_coincidence_rates(
     t_start = data[0][0].t_start
     t_stop = data[0][0].t_stop
     t_winpos = ue._winpos(t_start, t_stop, window_size, window_step)
-    num_tr = len(data)
+    n_trail = len(data)
 
     # subplots format and marker properties
     plot_params_and_markers_dict = plot_params_and_markers_default.copy()
@@ -706,12 +758,12 @@ def plot_coincidence_rates(
     ax3.set_title('Coincidence Rates')
     ax3.plot(t_winpos + window_size / 2.,
              joint_suprise_dict['n_emp'] / (
-                 window_size.rescale('s').magnitude * num_tr),
+                 window_size.rescale('s').magnitude * n_trail),
              label='empirical', lw=plot_params_and_markers_dict['lw'],
              color=plot_params_and_markers_dict['data_markercolor'][0])
     ax3.plot(t_winpos + window_size / 2.,
              joint_suprise_dict['n_exp'] / (
-                 window_size.rescale('s').magnitude * num_tr),
+                 window_size.rescale('s').magnitude * n_trail),
              label='expected', lw=plot_params_and_markers_dict['lw'],
              color=plot_params_and_markers_dict['data_markercolor'][1])
     ax3.set_xlim((min(t_winpos) - window_size).rescale('ms').magnitude,
@@ -867,7 +919,9 @@ def plot_statistical_significance(
     ax4.set_yticks([ue.jointJ(0.99), ue.jointJ(0.5), ue.jointJ(0.01)])
 
     ax4.set_xlabel('Time [ms]', fontsize=plot_params_and_markers_dict['fsize'])
-    ax4.set_yticklabels([alpha + 0.5, alpha, alpha - 0.5])
+    # TODO: how to set yticklabels correct: bottem = 0, top=1 ?
+    # TODO: should alpha be a variable or like now constant 0.5 ?
+    ax4.set_yticklabels([alpha - 0.5, alpha, alpha + 0.5])
 
 
 def plot_unitary_events(
@@ -949,7 +1003,7 @@ def plot_unitary_events(
     t_start = data[0][0].t_start
     t_stop = data[0][0].t_stop
     t_winpos = ue._winpos(t_start, t_stop, window_size, window_step)
-    num_tr = len(data)
+    n_trail = len(data)
 
     # subplots format and marker properties
     plot_params_and_markers_dict = plot_params_and_markers_default.copy()
@@ -967,14 +1021,16 @@ def plot_unitary_events(
         for tr, data_tr in enumerate(data):
             ax5.plot(data_tr[n].rescale('ms').magnitude,
                      numpy.ones_like(data_tr[n].magnitude) *
-                     tr + n * (num_tr + 1) + 1,
+                     tr + n * (n_trail + 1) + 1,
                      ls='None', marker=plot_params_and_markers_dict[
                     'data_symbol'], markersize=plot_params_and_markers_dict[
                     'data_markersize'], color=plot_params_and_markers_dict[
                     'data_markercolor'][0])
+            # TODO: rename sig_idx_win to signum_index_window?
             sig_idx_win = numpy.where(
                 joint_suprise_dict['Js'] >= joint_suprise_significance)[0]
             if len(sig_idx_win) > 0:
+                # TODO: rename x and xx to be self-explaining
                 x = numpy.unique(
                     joint_suprise_dict['indices']['trial' + str(tr)])
                 if len(x) > 0:
@@ -986,7 +1042,7 @@ def plot_unitary_events(
                     ax5.plot(
                         numpy.unique(xx) * binsize,
                         numpy.ones_like(numpy.unique(xx)) * tr + n * (
-                            num_tr + 1) + 1,
+                            n_trail + 1) + 1,
                         ms=plot_params_and_markers_dict['event_markersize'],
                         marker=plot_params_and_markers_dict['event_symbol'],
                         ls='', markerfacecolor=plot_params_and_markers_dict
@@ -1019,19 +1075,24 @@ def plot_unitary_events(
                          ['number_minor_ticks_time'] + 1)))
     # set y-axis
     y_ticks_list = []
-    for yt1 in range(1, n_neurons * num_tr, num_tr + 1):
+    # finding y-tick position for trail no.1
+    for yt1 in range(1, n_neurons * n_trail, n_trail + 1):
         y_ticks_list.append(yt1)
+    # finding y-tick position for trail interval of 15
     for n in range(n_neurons):
-        for yt2 in range(n * (num_tr + 1) + 15, (n + 1) * num_tr, 15):
+        for yt2 in range(n * (n_trail + 1) + 15, (n + 1) * n_trail, 15):
             y_ticks_list.append(yt2)
     y_ticks_list.sort()
 
     y_ticks_labels_list = [1]
-    number_of_y_ticks_per_neuron = math.floor(num_tr / 15)
+    # setting y-tick interval to 15 trails
+    number_of_y_ticks_per_neuron = math.floor(n_trail / 15)
     for i in range(number_of_y_ticks_per_neuron):
         y_ticks_labels_list.append((i + 1) * 15)
 
     auxiliary_list = y_ticks_labels_list
+    # adding n_neuron times the y_ticks_labels_list to itself, so that each
+    # neuron has the same y_ticks_labels
     for i in range(n_neurons - 1):
         y_ticks_labels_list += auxiliary_list
 
@@ -1045,8 +1106,8 @@ def plot_unitary_events(
 
 def _checking_user_entries_of_plot_ue(
         data, joint_suprise_dict, joint_suprise_significance, binsize,
-        window_size, window_step, n_neurons,
-        plot_params_and_markers_user):
+        window_size, window_step, n_neurons, position,
+        **plot_params_and_markers_user):
 
     if (not isinstance(data, list) and not isinstance(
             data, numpy.ndarray)):  # sollen weiter Typen erlaubt sein???
@@ -1090,6 +1151,9 @@ def _checking_user_entries_of_plot_ue(
 
     if not isinstance(n_neurons, int):
         raise TypeError('n_neurons must be an integer')
+
+    if len(position) != 6:
+        raise ValueError('position must have 6 tuples to cover all subplots')
 
     if not isinstance(plot_params_and_markers_user, dict):
         raise TypeError('plot_params_user must be a dictionary')

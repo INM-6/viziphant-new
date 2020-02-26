@@ -102,7 +102,7 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
                                                          figsize=(20, 20))
         plot_spike_events(
             self.spiketrains, window_size=100 * pq.ms, window_step=10 * pq.ms,
-            n_neurons=2, position=(1, 1, 1),
+            n_neurons=2, position=(),
             plot_params_and_markers_user={'fsize': 14})
         self.path_result_image_plot_spike_events = \
             tempfile.mkstemp(suffix=".png")[1]
