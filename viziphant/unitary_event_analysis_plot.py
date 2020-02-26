@@ -9,7 +9,7 @@ import elephant.unitary_event_analysis as ue
 # TODO: remember: *args, unpacking operator * returns a tuple not a list
 #                 **kwargs, unpacking operator ** returns a dictionary
 plot_params_and_markers_default = {
-    ## params
+    # # params
     # epochs to be marked on the time axis
     'events': [],
     # id of the units
@@ -35,7 +35,7 @@ plot_params_and_markers_default = {
     'boolean_vertical_lines': False,
     # color of the vertical lines at the major ticks of the x-axis
     'color_vertical_lines': "r",
-    ## markers
+    # # markers
     'data_symbol': ".",
     'data_markersize': 0.5,
     'data_markercolor': ("k", "b", "r"),
@@ -137,7 +137,7 @@ def plot_unitary_event_full_analysis(
     # checking the user entries:
     """
     try:
-        _checkungUserEntries_plot_UE(data, joint_suprise_dict, 
+        _checkingUserEntries_plot_UE(data, joint_suprise_dict, 
         joint_suprise_significance, binsize,
         window_size, window_step, n_neurons, plot_params_user, 
         plot_markers_user, position)
@@ -333,7 +333,7 @@ def plot_spike_events(
     # alternative for variable n_neuron (>2):
     for n in range(n_neurons):
         n_th_neuron = 'Neuron ' + (n+1).__str__()
-        ax0.text(x_lim[1] + 20, n * (n_trail +1), n_th_neuron)
+        ax0.text(x_lim[1] + 20, n * (n_trail + 1), n_th_neuron)
 
     ax0.set_xlabel('Time [ms]', fontsize=plot_params_and_markers_dict['fsize'])
     ax0.set_ylabel('Trial', fontsize=plot_params_and_markers_dict['fsize'])
@@ -552,8 +552,9 @@ def plot_coincidence_events(
                      numpy.ones_like(data_tr[n].magnitude) *
                      tr + n * (num_tr + 1) + 1, ls='None',
                      marker=plot_params_and_markers_dict['data_symbol'],
-                     markersize=plot_params_and_markers_dict['data_markersize']
-                     , color=plot_params_and_markers_dict['data_markercolor'][0])
+                     markersize=plot_params_and_markers_dict[
+                         'data_markersize'], color=
+                     plot_params_and_markers_dict['data_markercolor'][0])
             ax2.plot(numpy.unique(
                 joint_suprise_dict['indices']['trial' + str(tr)]) * binsize,
                 numpy.ones_like(numpy.unique(
@@ -825,9 +826,9 @@ def plot_statistical_significance(
 
     if len(plot_params_and_markers_dict['unit_real_ids']) != n_neurons:
         raise ValueError('length of unit_ids should be equal to '
-                        'number of neurons! \nUnit_Ids: ' +
-                        plot_params_and_markers_dict['unit_real_ids'] +
-                        'ungleich NumOfNeurons: ' +n_neurons)
+                         'number of neurons! \nUnit_Ids: ' +
+                         plot_params_and_markers_dict['unit_real_ids'] +
+                         'ungleich NumOfNeurons: ' + n_neurons)
 
     ax4 = plt.subplot(position[0], position[1], position[2])
     ax4.set_title('Statistical Significance')
@@ -967,11 +968,10 @@ def plot_unitary_events(
             ax5.plot(data_tr[n].rescale('ms').magnitude,
                      numpy.ones_like(data_tr[n].magnitude) *
                      tr + n * (num_tr + 1) + 1,
-                     ls='None', marker=plot_params_and_markers_dict
-                ['data_symbol'],
-                     markersize=plot_params_and_markers_dict['data_markersize']
-                     , color=plot_params_and_markers_dict['data_markercolor']
-                [0])
+                     ls='None', marker=plot_params_and_markers_dict[
+                    'data_symbol'], markersize=plot_params_and_markers_dict[
+                    'data_markersize'], color=plot_params_and_markers_dict[
+                    'data_markercolor'][0])
             sig_idx_win = numpy.where(
                 joint_suprise_dict['Js'] >= joint_suprise_significance)[0]
             if len(sig_idx_win) > 0:
@@ -995,8 +995,8 @@ def plot_unitary_events(
                         ['event_markeredgecolor'])
 
         if n < n_neurons - 1:
-            ax5.axhline((tr + 2) * (n + 1), lw=plot_params_and_markers_dict
-            ['lw'], color='b')
+            ax5.axhline((tr + 2) * (n + 1), lw=plot_params_and_markers_dict[
+                'lw'], color='b')
     ax5.set_xlim((min(t_winpos) - window_size).rescale('ms').magnitude,
                  (max(t_winpos) + window_size).rescale('ms').magnitude)
     ax5.set_ylim(0, (tr + 2) * (n + 1) + 1)
@@ -1043,7 +1043,7 @@ def plot_unitary_events(
     ax5.set_ylabel('Trial', fontsize=plot_params_and_markers_dict['fsize'])
 
 
-def _checking_user_entries_of_plot_UE(
+def _checking_user_entries_of_plot_ue(
         data, joint_suprise_dict, joint_suprise_significance, binsize,
         window_size, window_step, n_neurons,
         plot_params_and_markers_user):
@@ -1071,25 +1071,25 @@ def _checking_user_entries_of_plot_UE(
             and (not isinstance(joint_suprise_significance, numpy.ndarray))):
         raise TypeError(
             'joint_suprise_significance must be a list (of floats)')
-    elif (isinstance(joint_suprise_significance, list)):
+    elif isinstance(joint_suprise_significance, list):
         for i in joint_suprise_significance:
             if ((not isinstance(joint_suprise_significance[i], numpy.float64))
-                and (not isinstance(joint_suprise_significance[i], float))):
+                    and (not isinstance(joint_suprise_significance[i], float
+                                        ))):
                 raise TypeError('elements of the joint_suprise_significance '
                                 'list are NOT floats')
 
-    if (not isinstance(binsize, pq.quantity.Quantity)):  # quantity scaler
+    if not isinstance(binsize, pq.quantity.Quantity):  # quantity scaler
         raise TypeError('binsize must be a quantity scaler/int')
 
-    if (not isinstance(window_size, pq.quantity.Quantity)):
+    if not isinstance(window_size, pq.quantity.Quantity):
         raise TypeError('window_size must be a quantity scaler/int')
 
-    if (not isinstance(window_step, pq.quantity.Quantity)):
+    if not isinstance(window_step, pq.quantity.Quantity):
         raise TypeError('window_step must be a quantity scaler/int')
 
-    if (not isinstance(n_neurons, int)):
+    if not isinstance(n_neurons, int):
         raise TypeError('n_neurons must be an integer')
 
-    if (not isinstance(plot_params_and_markers_user, dict)):
+    if not isinstance(plot_params_and_markers_user, dict):
         raise TypeError('plot_params_user must be a dictionary')
-

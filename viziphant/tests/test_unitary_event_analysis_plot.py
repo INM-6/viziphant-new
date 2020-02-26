@@ -7,7 +7,7 @@ from viziphant.unitary_event_analysis_plot import \
     plot_coincidence_events, plot_coincidence_rates, \
     plot_statistical_significance, plot_unitary_events
 import viziphant.tests.create_targets.\
-    create_target_unitary_event_analysis_plot as cti #creat target image
+    create_target_unitary_event_analysis_plot as create_target
 import quantities as pq
 import neo
 import elephant.unitary_event_analysis as ue
@@ -43,44 +43,44 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
         # creat a fixed target image for each function
 
         # create 1.figure with 6 subplots with
-        cti.create_target_plot_UE_full_analysis()
+        create_target.create_target_plot_ue_full_analysis()
         cls.path_target_image_plot_UE_full_analysis = \
-           cti.PLOT_UE_FULL_ANALYSIS_TARGET_PATH
+            create_target.PLOT_UE_FULL_ANALYSIS_TARGET_PATH
 
         # create 2.figure with 1 subplot with plot_spike_events():
-        cti.create_target_spike_events()
+        create_target.create_target_spike_events()
         cls.path_target_image_plot_spike_events = \
-            cti.PLOT_SPIKE_EVENTS_TARGET_PATH
+            create_target.PLOT_SPIKE_EVENTS_TARGET_PATH
 
         # create 3.figure with 1 subplot with plot_spike_rates():
-        cti.create_target_spike_rates()
+        create_target.create_target_spike_rates()
         cls.path_target_image_plot_spike_rates = \
-            cti.PLOT_SPIKE_RATES_TARGET_PATH
+            create_target.PLOT_SPIKE_RATES_TARGET_PATH
 
         # create 4.figure with 1 subplot with plot_coincidence_events():
-        cti.create_target_coincidence_events()
+        create_target.create_target_coincidence_events()
         cls.path_target_image_plot_coincidence_events = \
-            cti.PLOT_COINCIDENCE_EVENTS_TARGET_PATH
+            create_target.PLOT_COINCIDENCE_EVENTS_TARGET_PATH
 
         # create 5.figure with 1 subplot with plot_coincidence_rates():
-        cti.create_target_coincidence_rates()
+        create_target.create_target_coincidence_rates()
         cls.path_target_image_plot_coincidence_rates = \
-            cti.PLOT_COINCIDENCE_RATES_TARGET_PATH
+            create_target.PLOT_COINCIDENCE_RATES_TARGET_PATH
 
         # create 6.figure with 1 subplot with plot_statistical_significance():
-        cti.create_target_statistical_significance()
+        create_target.create_target_statistical_significance()
         cls.path_target_image_plot_statistical_significance = \
-            cti.PLOT_STATISTICAL_SIGNIFICANCE_TARGET_PATH
+            create_target.PLOT_STATISTICAL_SIGNIFICANCE_TARGET_PATH
 
         # create 7.figure with 1 subplot with plot_unitary_events():
-        cti.create_target_unitary_events()
+        create_target.create_target_unitary_events()
         cls.path_target_image_plot_unitary_events = \
-            cti.PLOT_UNITARY_EVENTS_TARGET_PATH
+            create_target.PLOT_UNITARY_EVENTS_TARGET_PATH
 
     def test_plot_unitary_event_full_analysis(self):
         # create result image
         self.result_image_plot_UE_full_analysis = plt.figure("1.1",
-                                                         figsize=(20, 20))
+                                                             figsize=(20, 20))
         plot_unitary_event_full_analysis(
             self.spiketrains, self.UE, ue.jointJ(0.05), binsize=5 * pq.ms,
             window_size=100 * pq.ms, window_step=10 * pq.ms, n_neurons=2,
@@ -137,8 +137,8 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
         self.result_image_plot_coincidence_events = plt.figure(
             "4.1", figsize=(20, 20))
         plot_coincidence_events(
-            self.spiketrains, self.UE, ue.jointJ(0.05), window_size=100 * pq.ms,
-            window_step=10 * pq.ms, n_neurons=2, position=(1, 1, 1),
+            self.spiketrains, self.UE, ue.jointJ(0.05), window_size=100 *
+            pq.ms, window_step=10 * pq.ms, n_neurons=2, position=(1, 1, 1),
             plot_params_and_markers_user={'fsize': 14})
         self.path_result_image_plot_coincidence_events = \
             tempfile.mkstemp(suffix=".png")[1]
@@ -173,8 +173,8 @@ class UnitaryEventAnalysisPlotTestCase(unittest.TestCase):
         self.result_image_plot_statistical_significance = plt.figure(
             "6.1", figsize=(20, 20))
         plot_statistical_significance(
-            self.spiketrains, self.UE, ue.jointJ(0.05), window_size=100 * pq.ms,
-            window_step=10 * pq.ms, n_neurons=2, position=(1, 1, 1),
+            self.spiketrains, self.UE, ue.jointJ(0.05), window_size=100 *
+            pq.ms, window_step=10 * pq.ms, n_neurons=2, position=(1, 1, 1),
             plot_params_and_markers_user={'fsize': 14})
         self.path_result_image_plot_statistical_significance = \
             tempfile.mkstemp(suffix=".png")[1]
