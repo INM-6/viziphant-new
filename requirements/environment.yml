@@ -1,0 +1,12 @@
+name: elephant
+
+dependencies:
+  - python>=3.6
+  - pip
+  - numpy
+  - matplotlib
+  - seaborn
+  - pip:
+      - -r file:requirements.txt
+      - -r file:requirements-docs.txt
+      - -r file:requirements-tests.txt
