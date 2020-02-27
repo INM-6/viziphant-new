@@ -9,7 +9,9 @@ import elephant.unitary_event_analysis as ue
 from viziphant.unitary_event_analysis_plot import \
     plot_unitary_event_full_analysis, plot_spike_events, plot_spike_rates, \
     plot_coincidence_events, plot_coincidence_rates, \
-    plot_statistical_significance, plot_unitary_events, \
+    plot_statistical_significance, plot_unitary_events  # , \
+# plot_unitary_events_simplified
+from viziphant.plot_unitary_events_simplified import \
     plot_unitary_events_simplified
 
 target_images_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)),

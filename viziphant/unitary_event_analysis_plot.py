@@ -1106,39 +1106,118 @@ def plot_unitary_events(
     ax5.set_xlabel('Time [ms]', fontsize=plot_params_and_markers_dict['fsize'])
     ax5.set_ylabel('Trial', fontsize=plot_params_and_markers_dict['fsize'])
 
+
 def plot_unitary_events_simplified(
         data, joint_suprise_dict, joint_suprise_significance, binsize,
         window_size, window_step, n_neurons):
+    """
+    Parameters
+    ----------
+    data: list of spiketrains
+        list of spiketrains in different trials as representation of
+        neural activity
+    joint_suprise_dict: dictionary
+        JointSuprise dictionary
+    joint_suprise_significance: list of floats
+        list of suprise measure
+    binsize: Quantity scalar with the dimension time
+       size of bins for descritizing spike trains
+    window_size: Quantity scalar with dimension time
+       size of the window of analysis
+    window_step: Quantity scalar with dimension time
+       size of the window step
+    n_neurons: integer
+        number of Neurons
+    plot_params_and_markers_user: dictionary
+        plotting parameters and marker properties from the user
+    position: tuple
+        pos is a three integer-tuple, where the first integer is the number
+        of rows, the second the number of columns, and the third the index
+        of the subplot
+    """
+    print("old")
     print("plotting unitary_events_simplified ...")
+    # t_start: start of spike recording ;; t_stop: end of spike recording
     t_start = data[0][0].t_start
     t_stop = data[0][0].t_stop
+    # t_winpos:_winpos returns an ndarray of evenly spaced values,
+    # representing the time depending position of the analysis window
     t_winpos = ue._winpos(t_start, t_stop, window_size, window_step)
-    n_trail = len(data)
+    # n_trial: data-length is equivalent to the number of recorded trails
+    n_trial = len(data)
+    # t_start, t_stop, t_winpos: <class 'quantities.quantity.Quantity'>
+    # n_trial: <class 'int'>
+
     ax6 = plt.subplot(7, 1, 7)
     ax6.set_title('Unitary Events (simplified)')
     for n in range(n_neurons):
+        # enumerate(): takes a collection and returns it as an enumerate object
+        # function adds a counter as the key of the enumerate object
+        # e.g: enumerate(data) -> [(0, [<SpikeTrain1(array([ 26., ..., 1873.])
+        # * ms, [0.0 ms, 2100.0 ms])> ; <SpikeTrain2(array([3., ..., 2032.])
+        # * ms, [0.0 ms, 2100.0 ms])> ]
         for tr, data_tr in enumerate(data):
+            # tr: counter (here: 0 to end);; data_tr: content of iterable
+            # object data: list of SpikeTrain-arrays
+
+            # plotting all spike events
+            # x: data_tr[n].rescale('ms').magnitude,
+            # y: numpy.ones_like(data_tr[n].magnitude) * tr +
+            # n * (n_trial + 1) + 1
+            # numpy.ones_like(): return an array of ones with the same shape
+            # and type as the given array
             ax6.plot(data_tr[n].rescale('ms').magnitude,
-                     numpy.ones_like(data_tr[n].magnitude) *
-                     tr + n * (n_trail + 1) + 1,
+                     numpy.ones_like(data_tr[n].magnitude) * tr +
+                     n * (n_trial + 1) + 1,
                      ls='None', marker='.', markersize=0.5, color="k")
+
+            # TODO: rename sig_idx_win, x and xx to be self-explaining
+            # searching for unitary events
+            # numpy.where(condition[x,y]): return elements chosen from x or y
+            # depending on condition;; true->yield x, false->yield y
+            # joint_suprise_dict['Js']: float-array
+            # joint_suprise_significance: float
+
             sig_idx_win = numpy.where(
                 joint_suprise_dict['Js'] >= joint_suprise_significance)[0]
+            # sig_idx_win: array of spike-indicies, where the condition is true
+            # -> calculated suprise is greater/equal than suprise-significance
+            # TODO: think about using nonzero instead of where
+
             if len(sig_idx_win) > 0:
-                # TODO: rename x and xx to be self-explaining
+                # numpy.unique: find the unique elements of an array and
+                # returns the sorted unique elements of an array
+                # -> remove all multiple elements of the array, so that the
+                # 'orginal' remains and sort it
+                # joint_suprise_dict['indices']['trial23'] = [91. 91.
+                # ..., 309. 309. ...] -> x = [91. 309.]
+                # x: ???locations of possible significant correlation
+                # between spike events???
                 x = numpy.unique(
                     joint_suprise_dict['indices']['trial' + str(tr)])
+
                 if len(x) > 0:
                     xx = []
                     for j in sig_idx_win:
+                        # append from x the i-th element to xx, when the
+                        # i-th_ele*binsize is in the analysis-window meaning
+                        # >= t_winpos[j] AND < t_winpos[j] + window_size
                         xx = numpy.append(xx, x[numpy.where(
                             (x * binsize >= t_winpos[j]) &
                             (x * binsize < t_winpos[j] + window_size))])
+
+                    # plotting all unitary events
+                    # x: numpy.unique(xx) * binsize ;; multiplying with binsize
+                    # to undo the binning, which was done before
+                    # (in creating the joint_suprise_dict)
+                    # y: numpy.ones_like(numpy.unique(xx)) * tr +
+                    # n * (n_trial + 1) + 1
                     ax6.plot(
                         numpy.unique(xx) * binsize,
                         numpy.ones_like(numpy.unique(xx)) * tr + n * (
-                                n_trail + 1) + 1,
+                                n_trial + 1) + 1,
                         ms=5, marker='s', ls='', markeredgecolor='r')
+
         # horizontal separation line
         if n < n_neurons - 1:
             ax6.axhline((tr + 2) * (n + 1))
