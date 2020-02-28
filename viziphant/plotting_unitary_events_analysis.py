@@ -12,7 +12,7 @@ params_dict_default = {
     # epochs to be marked on the time axis
     'events': [],
     # size of the figure
-    'figsize':(12,10),
+    'figsize': (12, 10),
     # id of the units
     'unit_ids': [0, 1],
     # horizontal white space between subplots
@@ -55,7 +55,6 @@ def plot_UE(
     params_dict = params_dict_default.copy()
     params_dict.update(plot_params_user)
 
-    # TODO: this should maybe proofed in the checking user entries function
     if len(params_dict['unit_real_ids']) != n_neurons:
         raise ValueError(
             'length of unit_ids should be equal to number of neurons! \n'
@@ -65,15 +64,13 @@ def plot_UE(
     plt.figure(num=1, figsize=params_dict['figsize'])
     plt.subplots_adjust(hspace=params_dict['hspace'],
                         wspace=params_dict['wspace'])
-                        # top=params_dict['top'], bottom=params_dict['bottom'],
-                        # right=params_dict['right'], left=params_dict['left'])
 
     # # set common variables
     t_start = data[0][0].t_start
     t_stop = data[0][0].t_stop
     t_winpos = ue._winpos(t_start, t_stop, window_size, window_step)
     n_trail = len(data)
-    # TODO: better minimum for set_xlim -> Done? oder statt -window_size, 0
+
     xlim_left = (min(t_winpos)).rescale('ms').magnitude
     xlim_right = (max(t_winpos) + window_size).rescale('ms').magnitude
 
@@ -100,7 +97,6 @@ def plot_UE(
     for i in range(n_neurons - 1):
         y_ticks_labels_list += auxiliary_list
 
-    # TODO: make a function, who sets the x-ticks with the Major/Minor Locator
     def set_xticks(axes_name):
         axes_name.xaxis.set_major_locator(
             MultipleLocator(params_dict['major_tick_width_time']))
@@ -211,7 +207,7 @@ def plot_UE(
 
     axes4.set_xlim(xlim_left, xlim_right)
     set_xticks(axes4)
-    # TODO: set max_coinicidence_val variable -> maybe not
+
     y_ticks = axes4.get_ylim()
     axes4.set_yticks([0, y_ticks[1] / 2, y_ticks[1]])
 
@@ -240,7 +236,6 @@ def plot_UE(
     axes5.set_yticks([ue.jointJ(0.99), ue.jointJ(0.5), ue.jointJ(0.01)])
 
     axes5.set_xlabel('Time [ms]', fontsize=params_dict['fsize'])
-    # TODO: how to set yticklabels correct: bottem = 0, top=1 ?
     # TODO: should alpha be a variable(user-changeable)
     #  or like now constant 0.5 ?
     axes5.set_yticklabels([alpha - 0.5, alpha, alpha + 0.5])
