@@ -131,7 +131,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# manually created target images for unit_tests
+# manually created target images for tests
 viziphant/tests/target_images/
 *.h5
 
