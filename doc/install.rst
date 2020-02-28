@@ -11,7 +11,7 @@ Below is the explanation of how to proceed with these two steps.
 Prerequisites
 =============
 
-Viziphant requires Python_ 2.7, 3.5, 3.6, 3.7, or 3.8.
+Viziphant requires Python_ 3.6, 3.7, or 3.8.
 
 .. tabs::
 

@@ -1,4 +1,4 @@
-name: elephant
+name: viziphant
 
 dependencies:
   - python>=3.6
@@ -6,7 +6,3 @@ dependencies:
   - numpy
   - matplotlib
   - seaborn
-  - pip:
-      - -r file:requirements.txt
-      - -r file:requirements-docs.txt
-      - -r file:requirements-tests.txt

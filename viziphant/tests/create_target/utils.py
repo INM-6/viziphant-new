@@ -11,7 +11,8 @@ def calculate_md5(fpath, chunk_size=1024 * 1024):
 
 
 def check_integrity(fpath, md5):
-    is_valid = os.path.isfile(fpath)
-    is_valid &= md5 == calculate_md5(fpath)
+    if not os.path.isfile(fpath):
+        raise IOError(f"Invalid file: '{fpath}' does not exist.")
+    is_valid = md5 == calculate_md5(fpath)
     if not is_valid:
-        raise IOError("Invalid file: invalid checksum.")
+        raise IOError("Invalid file: wrong checksum.")
