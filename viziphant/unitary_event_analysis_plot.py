@@ -213,9 +213,9 @@ def plot_unitary_event_full_analysis(
         window_size, window_step, n_neurons, default_positions[
             'position_unitary_events'], **plot_params_and_markers_dict)
 
-    plot_unitary_events_simplified(
-        data, joint_suprise_dict, joint_suprise_significance, binsize,
-        window_size, window_step, n_neurons)
+    # plot_unitary_events_simplified(
+    #     data, joint_suprise_dict, joint_suprise_significance, binsize,
+    #     window_size, window_step, n_neurons)
 
 
 def plot_spike_events(
@@ -1149,7 +1149,7 @@ def plot_unitary_events_simplified(
     # n_trial: <class 'int'>
 
     ax6 = plt.subplot(7, 1, 7)
-    ax6.set_title('Unitary Events (simplified)')
+    ax6.set_title('Unitary Events simplified old')
     for n in range(n_neurons):
         # enumerate(): takes a collection and returns it as an enumerate object
         # function adds a counter as the key of the enumerate object
