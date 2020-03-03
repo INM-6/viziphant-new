@@ -36,12 +36,12 @@ class UETestCase(unittest.TestCase):
             winstep=10 * pq.ms, pattern_hash=[3])
 
     def test_plot_UE(self):
-        print("vorher")
+        # print("vorher")
         plot_UE(
             data=self.spiketrains, joint_suprise_dict=self.UE,
             joint_suprise_significance=ue.jointJ(0.05), binsize=5*pq.ms,
             window_size=100*pq.ms, window_step=10*pq.ms, n_neurons=2)
-        print("nachher")
+        # print("nachher")
 
 
 if __name__ == '__main__':

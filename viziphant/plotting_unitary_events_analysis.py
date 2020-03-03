@@ -142,6 +142,8 @@ def plot_UE(
     # psth = peristimulu time histogram
     max_val_psth = 0
     for n in range(n_neurons):
+        # print("rate_avg1: ", joint_suprise_dict['rate_avg'][:, n], "\n",
+        #       "rate_avg2: ", joint_suprise_dict['rate_avg'][:,])
         axes2.plot(
             t_winpos + window_size / 2.,
             joint_suprise_dict['rate_avg'][:, n].rescale('Hz'),
@@ -216,6 +218,7 @@ def plot_UE(
     axes4.set_ylabel('(1/s)', fontsize=params_dict['fsize'])
 
     print('plotting Statistical Significance ...')
+    # TODO: was ist alpha?
     alpha = 0.5
     axes5 = plt.subplot(6, 1, 5)
     axes5.set_title('Statistical Significance')
@@ -238,6 +241,7 @@ def plot_UE(
     axes5.set_xlabel('Time [ms]', fontsize=params_dict['fsize'])
     # TODO: should alpha be a variable(user-changeable)
     #  or like now constant 0.5 ?
+    # TODO: y-scala from 0-1(like now), or -2 to 2
     axes5.set_yticklabels([alpha - 0.5, alpha, alpha + 0.5])
 
     print('plottting Unitary Events ...')
@@ -252,20 +256,46 @@ def plot_UE(
                 markersize=0.5, color='k')
             # TODO: rename sig_idx_win to
             #  indices_of_significant_JointSurprises?
+            # print("joint_suprise_significance: ", joint_suprise_significance,
+            #       "\n", "joint_suprise_dict['Js']: ", joint_suprise_dict['Js'],
+            #       "condition_true: ", np.where(
+            #       joint_suprise_dict['Js'] >= joint_suprise_significance)[0],
+            #       "\n")
+            # print("neuron: ", n , "; tial: ", trial, np.where(
+            #       joint_suprise_dict['Js'] >= joint_suprise_significance))
+
             sig_idx_win = np.where(
                 joint_suprise_dict['Js'] >= joint_suprise_significance)[0]
             if len(sig_idx_win) > 0:
                 # TODO: rename x and xx to be self-explaining
                 #  x: indices_of_unique_pattern_within_a_window_shape
                 #  xx: indices_of_patter_in_analysis_window
+                # print("joint_suprise_dict['idices']['trial'"+str(trial), "]",
+                #       joint_suprise_dict['indices']['trial' + str(trial)], "\n"
+                #       , "x: ", np.unique(
+                #     joint_suprise_dict['indices']['trial' + str(trial)]))
+
                 x = np.unique(
                     joint_suprise_dict['indices']['trial' + str(trial)])
                 if len(x) > 0:
                     xx = []
                     for j in sig_idx_win:
+                        # TODO: remove np.nonzero or np.where and use
+                        #  mask instead -> x[condition] -> returns indices of
+                        #  x where the condition is true
                         xx = np.append(xx, x[np.where(
                             (x * binsize >= t_winpos[j]) &
                             (x * binsize < t_winpos[j] + window_size))])
+                    # print("x: ", x, "\n", "xx: ", xx, "\n",
+                    #       "index of x-elements appending to xx: ", np.where(
+                    #         (x * binsize >= t_winpos[j]) &
+                    #         (x * binsize < t_winpos[j] + window_size)), "\n",
+                    #       "x-element: ", x[np.where(
+                    #         (x * binsize >= t_winpos[j]) &
+                    #         (x * binsize < t_winpos[j] + window_size))])
+                    # print("neuron|trial: ", n, "|", trial, "\n",
+                    #       "sig_idx_win: ", sig_idx_win, "\n",
+                    #       "x: ", x, "\n", "xx: ", xx)
                     axes6.plot(
                         np.unique(xx) * binsize,
                         np.ones_like(np.unique(xx)) * trial + n * (n_trail + 1)
