@@ -47,7 +47,7 @@ def _get_attributes(spiketrains, key_list):
             # count group size for a value of the current key:
             while i < len(spiketrains) and current_value == ref_value:
                 attribute_array[i][key_count] = \
-                np.where(values == current_value)[0][0]
+                    np.where(values == current_value)[0][0]
                 i += 1
                 if i < len(spiketrains):
                     if group_key in spiketrains[i].annotations:
@@ -71,16 +71,19 @@ def rasterplot(spiketrain_list,
                filter_function=None,
                histscale=.1,
                labelkey=None,
-               markerargs={'markersize':4,'marker':'.'},
-               separatorargs=[{'linewidth':2, 'linestyle':'--', 'color':'0.8'},
-                              {'linewidth':1, 'linestyle':'--', 'color':'0.8'}],
+               markerargs={'markersize': 4, 'marker': '.'},
+               separatorargs=[{'linewidth': 2, 'linestyle': '--',
+                               'color': '0.8'},
+                              {'linewidth': 1, 'linestyle': '--',
+                               'color': '0.8'}],
                legend=False,
-               legendargs={'loc':(.98,1.), 'markerscale':1.5, 'handletextpad':0},
+               legendargs={'loc': (.98, 1.), 'markerscale': 1.5,
+                           'handletextpad': 0},
                ax=None,
                style='ticks',
                palette=None,
-               context=None, # paper, poster, talk
-                ):
+               context=None,  # paper, poster, talk
+               ):
 
     """
     This function plots the dot display of spike trains alongside its
@@ -150,7 +153,8 @@ def rasterplot(spiketrain_list,
                 Note that the first key is by default the list identification
                 key ('') when list of lists of spike trains are given.
         * '0+1': Two level labeling of 0 and 1
-        * annotation-key: Labeling each spike train with its value for given key
+        * annotation-key: Labeling each spike train with its value for
+          given key
         * None: No labeling
         Note that only groups (-> see groupingdepth) can be labeled as bulks.
         Alternatively you can color for an annotation key and show a legend.
@@ -243,7 +247,7 @@ def rasterplot(spiketrain_list,
 
     if ax is None:
         fig, ax = plt.subplots()
-        # axis must be created after sns.set() command for style to apply!
+    # axis must be created after sns.set() command for style to apply!
 
     margin = 1 - histscale
     left, bottom, width, height = ax.get_position().bounds
