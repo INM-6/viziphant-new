@@ -236,13 +236,17 @@ def plot_UE(
                color='b')
 
     set_xticks(axes5)
+    # TODO: why don't/should we use directly [-2, 0, 2]
     axes5.set_yticks([ue.jointJ(0.99), ue.jointJ(0.5), ue.jointJ(0.01)])
+    print([ue.jointJ(0.99), ue.jointJ(0.5), ue.jointJ(0.01)])
 
     axes5.set_xlabel('Time [ms]', fontsize=params_dict['fsize'])
     # TODO: should alpha be a variable(user-changeable)
     #  or like now constant 0.5 ?
-    # TODO: y-scala from 0-1(like now), or -2 to 2
-    axes5.set_yticklabels([alpha - 0.5, alpha, alpha + 0.5])
+    # TODO: y-scala from 0-1(like now), or -2 to 2 (like the real values)
+    # axes5.set_yticklabels([alpha - 0.5, alpha, alpha + 0.5])
+    # axes5.set_yticklabels([-2, 0, 2])
+    # axes5.set_yticklabels([0.99, 0.5, 0.01])
 
     print('plottting Unitary Events ...')
     axes6 = plt.subplot(6, 1, 6)
@@ -271,7 +275,7 @@ def plot_UE(
                 #  x: indices_of_unique_pattern_within_a_window_shape
                 #  xx: indices_of_patter_in_analysis_window
                 # print("joint_suprise_dict['idices']['trial'"+str(trial), "]",
-                #       joint_suprise_dict['indices']['trial' + str(trial)], "\n"
+                #       joint_suprise_dict['indices']['trial' + str(trial)], "\n")
                 #       , "x: ", np.unique(
                 #     joint_suprise_dict['indices']['trial' + str(trial)]))
 
