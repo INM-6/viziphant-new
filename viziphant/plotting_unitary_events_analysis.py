@@ -10,7 +10,7 @@ import elephant.unitary_event_analysis as ue
 params_dict_default = {
     # params
     # epochs to be marked on the time axis
-    'events': [],
+    'events': {},
     # size of the figure
     'figsize': (12, 10),
     # id of the units
@@ -48,7 +48,6 @@ PLOT_UE_TARGET_PATH = os.path.join(
 def plot_UE(
         data, joint_suprise_dict, significance_level, binsize,
         window_size, window_step, n_neurons, **plot_params_user):
-    print('target_images_dir: ', target_images_dir)
 
     # update params_dict_default with user input
     params_dict = params_dict_default.copy()
@@ -105,6 +104,14 @@ def plot_UE(
             MultipleLocator(params_dict['major_tick_width_time'] /
                             (params_dict['number_minor_ticks_time'] + 1)))
 
+    def mark_epochs(axes_name):
+        for key in params_dict['events'].keys():
+            for e_val in params_dict['events'][key]:
+                axes_name.axvline(e_val, ls='-', lw=params_dict['lw'],
+                                  color='r')
+                axes_name.text(e_val, params_dict['S_ylim'][0],
+                               key, fontsize=params_dict['fsize'], color='r')
+
     print('plotting Unitary Event Analysis ...')
 
     print('plotting Spike Events ...')
@@ -130,8 +137,8 @@ def plot_UE(
     axes1.set_yticklabels(y_ticks_labels_list, fontsize=params_dict['fsize'])
 
     for n in range(n_neurons):
-        n_th_neuron = 'Neuron ' + str(n+1)
-        axes1.text(xlim_right + 20, n * (n_trail + 1), n_th_neuron)
+        axes1.text(xlim_right + 20, n * (n_trail + 1),
+                   f"Unit {params_dict['unit_real_ids'][n]}")
 
     axes1.set_xlabel('Time [ms]', fontsize=params_dict['fsize'])
     axes1.set_ylabel('Trial', fontsize=params_dict['fsize'])
@@ -142,12 +149,10 @@ def plot_UE(
     # psth = peristimulu time histogram
     max_val_psth = 0
     for n in range(n_neurons):
-        # print("rate_avg1: ", joint_suprise_dict['rate_avg'][:, n], "\n",
-        #       "rate_avg2: ", joint_suprise_dict['rate_avg'][:,])
         axes2.plot(
             t_winpos + window_size / 2.,
             joint_suprise_dict['rate_avg'][:, n].rescale('Hz'),
-            label='Neuron ' + str(params_dict['unit_real_ids'][n]),
+            label=f"Unit {params_dict['unit_real_ids'][n]}",
             lw=params_dict['lw'])
         if max(joint_suprise_dict['rate_avg'][:, n]) > \
                 max_val_psth:
@@ -156,11 +161,12 @@ def plot_UE(
     axes2.set_xlim(xlim_left, xlim_right)
 
     max_val_psth = max_val_psth.rescale('Hz').magnitude
+
     axes2.set_ylim(0, max_val_psth + max_val_psth/10)
 
     set_xticks(axes2)
     axes2.set_yticks([0, int(max_val_psth / 2), int(max_val_psth)])
-
+    mark_epochs(axes2)
     axes2.legend(bbox_to_anchor=(1, 1), fancybox=True, shadow=True)
     axes2.set_xlabel('Time [ms]', fontsize=params_dict['fsize'])
     axes2.set_ylabel('(1/s)', fontsize=params_dict['fsize'])
@@ -175,11 +181,11 @@ def plot_UE(
                 np.ones_like(data_trial[n].magnitude) * trial +
                 n * (n_trail + 1) + 1, ls='none', marker='.', color='k',
                 markersize=0.5)
-            axes3.plot(np.unique(
-                joint_suprise_dict['indices']['trial' + str(trial)]) * binsize,
-                np.ones_like(
-                    np.unique(joint_suprise_dict['indices']['trial' + str(
-                        trial)])) * trial + n * (n_trail + 1) + 1,
+            axes3.plot(
+                np.unique(joint_suprise_dict['indices']['trial' + str(trial)])
+                * binsize,
+                np.ones_like(np.unique(joint_suprise_dict['indices'][
+                    'trial' + str(trial)])) * trial + n * (n_trail + 1) + 1,
                 ls='', markersize=params_dict['marker_size'],
                 marker='s', markerfacecolor='none', markeredgecolor='c')
         if n < n_neurons - 1:
@@ -191,7 +197,7 @@ def plot_UE(
     set_xticks(axes3)
     axes3.set_yticks(y_ticks_list)
     axes3.set_yticklabels(y_ticks_labels_list, fontsize=params_dict['fsize'])
-
+    mark_epochs(axes3)
     axes3.set_xlabel('Time [ms]', fontsize=params_dict['fsize'])
     axes3.set_ylabel('Trial', fontsize=params_dict['fsize'])
 
@@ -212,7 +218,7 @@ def plot_UE(
 
     y_ticks = axes4.get_ylim()
     axes4.set_yticks([0, y_ticks[1] / 2, y_ticks[1]])
-
+    mark_epochs(axes4)
     axes4.legend(bbox_to_anchor=(1, 1), fancybox=True, shadow=True)
     axes4.set_xlabel('Time [ms]', fontsize=params_dict['fsize'])
     axes4.set_ylabel('(1/s)', fontsize=params_dict['fsize'])
@@ -232,9 +238,9 @@ def plot_UE(
                color='r')
     axes5.text(t_winpos[30], -joint_suprise_significance - 0.9, '$\\alpha -$',
                color='b')
-
     set_xticks(axes5)
     axes5.set_yticks([ue.jointJ(0.99), ue.jointJ(0.5), ue.jointJ(0.01)])
+    mark_epochs(axes5)
     axes5.set_xlabel('Time [ms]', fontsize=params_dict['fsize'])
     axes5.set_yticklabels([0.99, 0.5, 0.01])
 
@@ -284,7 +290,7 @@ def plot_UE(
     set_xticks(axes6)
     axes6.set_yticks(y_ticks_list)
     axes6.set_yticklabels(y_ticks_labels_list, fontsize=params_dict['fsize'])
-
+    mark_epochs(axes6)
     axes6.set_xlabel('Time [ms]', fontsize=params_dict['fsize'])
     axes6.set_ylabel('Trial', fontsize=params_dict['fsize'])
 

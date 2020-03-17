@@ -40,7 +40,8 @@ class UETestCase(unittest.TestCase):
         plot_UE(
             data=self.spiketrains, joint_suprise_dict=self.UE,
             significance_level=0.05, binsize=5*pq.ms,
-            window_size=100*pq.ms, window_step=10*pq.ms, n_neurons=2)
+            window_size=100*pq.ms, window_step=10*pq.ms, n_neurons=2,
+            **{'events': {'Vision': [1200], 'Action': [1500]}})
         # print("nachher")
 
 
