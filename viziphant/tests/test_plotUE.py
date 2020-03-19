@@ -41,12 +41,11 @@ class UETestCase(unittest.TestCase):
             "tests/target_images")
         PLOT_UE_TARGET_PATH = os.path.join(
             target_images_dir, "target_plot_ue.png")
-        print("path2: ", PLOT_UE_TARGET_PATH)
         plot_UE(
-            data=self.spiketrains, joint_suprise_dict=self.UE,
+            data=self.spiketrains, joint_surprise_dict=self.UE,
             significance_level=0.05, binsize=5*pq.ms,
             window_size=100*pq.ms, window_step=10*pq.ms, n_neurons=2,
-            **{'events': {'Vision': [1000], 'Action': [1500]},
+            **{'events': {'Vision': [1000]*pq.ms, 'Action': [1500]*pq.ms},
                'savefig': True, 'showfig': False,
                'path_filename_format': PLOT_UE_TARGET_PATH})
 
