@@ -50,6 +50,5 @@ class UETestCase(unittest.TestCase):
                'path_filename_format': PLOT_UE_TARGET_PATH})
 
 
-
 if __name__ == '__main__':
     unittest.main()

@@ -7,8 +7,6 @@ based on Neo.
 # Copyright 2019-2020 by the Viziphant team, see `doc/authors.rst`.
 # License: Modified BSD, see LICENSE.txt for details.
 
-from . import (spike_train_correlation)
-
 
 def _get_version():
     import os
