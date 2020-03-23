@@ -6,8 +6,7 @@ import math
 import matplotlib.pyplot as plt
 import numpy as np
 import quantities as pq
-from matplotlib.ticker import (MultipleLocator, FormatStrFormatter,
-                               MaxNLocator)
+from matplotlib.ticker import (MaxNLocator)
 
 import elephant.unitary_event_analysis as ue
 
@@ -25,7 +24,7 @@ params_dict_default = {
     # orientation (figure margins)
     'top': 0.95,
     'bottom': 0.1,
-    'right': 0.87,
+    'right': 0.84,
     'left': 0.08,
     # font size
     'fsize': 12,
@@ -145,7 +144,7 @@ def plot_UE(data, joint_surprise_dict, significance_level, binsize,
     # update params_dict_default with user input
     params_dict = params_dict_default.copy()
     params_dict.update(plot_params_user)
-    # TODO: maybe remove this checking user-entries part to a separate function
+
     if len(params_dict['unit_real_ids']) != n_neurons:
         raise ValueError(
             'length of unit_ids should be equal to number of neurons! \n'
@@ -244,7 +243,6 @@ def plot_UE(data, joint_surprise_dict, significance_level, binsize,
     axis2.xaxis.set_major_locator(MaxNLocator(integer=True))
     axis2.set_yticks([0, int(max_val_psth / 2), int(max_val_psth)])
     mark_epochs(axis2)
-    # TODO: rethink legend positions (also axis4);;beware of length of unit id
     axis2.legend(bbox_to_anchor=(1, 1), fancybox=True, shadow=True)
     axis2.set_ylabel('(1/s)', fontsize=params_dict['fsize'])
 
