@@ -1,41 +1,14 @@
 import io
 import unittest
 
-import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
-import numpy as np
 import seaborn
 
 from viziphant.spike_train_correlation import plot_corrcoef
-from viziphant.tests.create_target.create_target_spike_train_correlation \
+from viziphant.tests.create_target.target_spike_train_correlation \
     import CORRCOEF_TARGET_PATH, get_default_corrcoef_matrix, \
     create_target_plot_correlation_coefficient
-
-
-def image_difference(path_target_image, path_result_image):
-    """
-    Computes normalized images difference.
-
-    Parameters
-    ----------
-    path_target_image : str or io.BytesIO
-        The file-like target image.
-    path_result_image : str or io.BytesIO
-        The file-like result image to compare with the target.
-
-    Returns
-    -------
-    diff_norm : float
-        The L1-norm of the difference between two input images per pixel per
-        channel.
-    """
-    # imread returns RGBA image
-    target_image = mpimg.imread(path_target_image, format='png')
-    result_image = mpimg.imread(path_result_image, format='png')
-    diff_image = np.abs(target_image - result_image)
-    diff_norm = np.linalg.norm(np.ravel(diff_image), ord=1)
-    diff_norm = diff_norm / diff_image.size  # per pixel per channel
-    return diff_norm
+from viziphant.tests.utils.utils import images_difference
 
 
 class SpikeTrainCorrelationTestCase(unittest.TestCase):
@@ -58,7 +31,7 @@ class SpikeTrainCorrelationTestCase(unittest.TestCase):
         with io.BytesIO() as buf:
             result_image_corrcoef.savefig(buf, format="png")
             buf.seek(0)
-            diff_norm = image_difference(str(CORRCOEF_TARGET_PATH), buf)
+            diff_norm = images_difference(str(CORRCOEF_TARGET_PATH), buf)
         tolerance = 1e-3
         self.assertLessEqual(diff_norm, tolerance)
 
