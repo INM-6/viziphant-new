@@ -267,9 +267,9 @@ def plot_UE(spiketrains, joint_surprise_dict, significance_level, bin_size,
                           ['trial' + str(trial)]) * bin_size
             coincidence_events_on_trialscale = \
                 np.ones_like(np.unique(joint_surprise_dict['indices'][
-                                           'trial' + str(
-                                               trial)])) * trial + neuron_id * (
-                            n_trial + 1) + 1
+                    'trial' + str(
+                        trial)])) * trial + neuron_id * (
+                    n_trial + 1) + 1
             axis3.plot(coincidence_events_on_timescale,
                        coincidence_events_on_trialscale, ls='',
                        markersize=params_dict['marker_size'], marker='s',
@@ -290,9 +290,9 @@ def plot_UE(spiketrains, joint_surprise_dict, significance_level, bin_size,
     axis4.set_title('Coincidence Rates')
     center_of_analysis_window = t_winpos + window_size / 2.
     empirical_coincidence_rate = joint_surprise_dict['n_emp'] / \
-                                 (window_size.rescale('s').magnitude * n_trial)
+        (window_size.rescale('s').magnitude * n_trial)
     expected_coincidence_rate = joint_surprise_dict['n_exp'] / \
-                                (window_size.rescale('s').magnitude * n_trial)
+        (window_size.rescale('s').magnitude * n_trial)
     axis4.plot(center_of_analysis_window, empirical_coincidence_rate,
                label='empirical', lw=params_dict['lw'], color='c')
     axis4.plot(center_of_analysis_window, expected_coincidence_rate,
