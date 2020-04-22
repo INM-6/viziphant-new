@@ -2,6 +2,7 @@
 Plotting function for unitary event analysis results.
 """
 import math
+import string
 from collections import namedtuple
 
 import matplotlib.pyplot as plt
@@ -264,7 +265,8 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
     axis2.xaxis.set_major_locator(MaxNLocator(integer=True))
     axis2.set_yticks([0, int(max_val_psth / 2), int(max_val_psth)])
     axis2.legend(fontsize=params_dict['fsize']//2)
-    axis2.set_ylabel('(1/s)', fontsize=params_dict['fsize'])
+    axis2.set_ylabel(f"({params_dict['frequency_unit']})",
+                     fontsize=params_dict['fsize'])
 
     print('plotting Coincidence Events ...')
     axis3 = plt.subplot(6, 1, 3, sharex=axis1)
@@ -313,7 +315,8 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
     y_ticks = axis4.get_ylim()
     axis4.set_yticks([0, y_ticks[1] / 2, y_ticks[1]])
     axis4.legend(fontsize=params_dict['fsize']//2)
-    axis4.set_ylabel('(1/s)', fontsize=params_dict['fsize'])
+    axis4.set_ylabel(f"({params_dict['frequency_unit']})",
+                     fontsize=params_dict['fsize'])
 
     print('plotting Statistical Significance ...')
     axis5 = plt.subplot(6, 1, 5, sharex=axis1)
@@ -388,11 +391,13 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
     axis6.set_xlabel('Time (ms)', fontsize=params_dict['fsize'])
     axis6.set_ylabel('Trial', fontsize=params_dict['fsize'])
 
-    # mark all epochs on all subplots
+    # mark all epochs on all subplots and annotate all subplotaxis
     for n in range(1, 7):
         mark_epochs(eval(f"axis{n}"))
-
-    # plt.show()
+        axis = locals()['axis'+str(n)]
+        axis.text(-0.05, 1.1, string.ascii_uppercase[n-1],
+                  transform=axis.transAxes, size=params_dict['fsize'] + 5,
+                  weight='bold')
 
     result = FigureUE(axis1, axis2, axis3, axis4, axis5, axis6)
     return result
