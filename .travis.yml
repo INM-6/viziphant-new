@@ -45,6 +45,7 @@ install:
 
   - pip -V
   - pip install coverage coveralls nose
+  - pip install -r requirements/requirements-tests.txt
   - python setup.py install
   - pip list
   - python --version
