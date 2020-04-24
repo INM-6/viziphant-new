@@ -9,7 +9,7 @@ import quantities as pq
 
 import elephant.unitary_event_analysis as ue
 from viziphant.tests.utils.utils import TEST_DATA_DIR, TARGET_IMAGES_DIR
-from viziphant.unitary_event_analysis import plot_UE
+from viziphant.unitary_event_analysis import plot_unitary_events
 from viziphant.tests.utils.utils import images_difference, check_integrity
 
 UE_DATASET_URL = "https://web.gin.g-node.org/INM-6/elephant-data/raw/master/" \
@@ -50,7 +50,7 @@ class UETestCase(unittest.TestCase):
                                        'Action': [1500] * pq.ms},
                             'savefig': True, 'showfig': False,
                             'path_filename_format': plot_path}
-        plot_UE(self.spiketrains, joint_surprise_dict=self.UE,
+        plot_unitary_events(self.spiketrains, joint_surprise_dict=self.UE,
                 significance_level=0.05, bin_size=5 * pq.ms,
                 window_size=100 * pq.ms, window_step=10 * pq.ms, n_neurons=2,
                 **plot_params_user)
