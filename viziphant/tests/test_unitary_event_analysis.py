@@ -10,7 +10,7 @@ import quantities as pq
 
 import elephant.unitary_event_analysis as ue
 from viziphant.tests.create_target.target_unitary_event_analysis import \
-    PLOT_UE_TARGET_PATH
+    PLOT_UE_TARGET_PATH, create_target_unitary_event_analysis
 from viziphant.tests.utils.utils import TEST_DATA_DIR
 from viziphant.tests.utils.utils import images_difference, check_integrity
 from viziphant.unitary_event_analysis import plot_unitary_events
@@ -41,7 +41,7 @@ class UETestCase(unittest.TestCase):
         plot_params_user = {'events': {'Vision': [1000] * pq.ms,
                                        'Action': [1500] * pq.ms}}
         plot_unitary_events(self.spiketrains, joint_surprise_dict=self.UE,
-                            significance_level=0.05, binsize=2 * pq.ms,
+                            significance_level=0.05, binsize=5 * pq.ms,
                             window_size=100 * pq.ms, window_step=10 * pq.ms,
                             n_neurons=2, **plot_params_user)
 
@@ -55,8 +55,11 @@ class UETestCase(unittest.TestCase):
             plt.show()
             diff_norm = images_difference(str(PLOT_UE_TARGET_PATH), f.name)
         # TODO: which tolerance-value is sensitive enough to detect all
-        #  interesting differences
-        tolerance = 1e-2
+        #  interesting differences? (1e-10 seems better than 1e-2), unless some
+        #  small changes in the spiketrain-data (e.g. shift of one particular
+        #  spike-dot in time of +- 0.5 ms) could remain undetected,
+        #  this depends on the chosen image/figure size of target and result
+        tolerance = 1e-10
         self.assertLessEqual(diff_norm, tolerance)
 
 
