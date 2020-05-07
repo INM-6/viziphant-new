@@ -66,7 +66,7 @@ class UETestCase(unittest.TestCase):
         #  small changes in the spiketrain-data (e.g. shift of one particular
         #  spike-dot in time of +- 0.5 ms) could remain undetected,
         #  this depends on the chosen image/figure size of target and result
-        tolerance = 1e-10
+        tolerance = 3e-2
         self.assertLessEqual(diff_norm, tolerance)
 
 
