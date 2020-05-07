@@ -1,4 +1,4 @@
-
+import tempfile
 from pathlib import Path
 from urllib.request import urlretrieve
 
@@ -15,7 +15,6 @@ from viziphant.unitary_event_analysis import \
 
 UE_DATASET_URL = "https://web.gin.g-node.org/INM-6/elephant-data/raw/master/" \
                  "dataset-1/dataset-1.h5"
-PLOT_UE_TARGET_PATH = TARGET_IMAGES_DIR / "target_plot_UE.png"
 
 # Download data
 filepath = TEST_DATA_DIR / Path(UE_DATASET_URL).name
@@ -34,15 +33,17 @@ UE = ue.jointJ_window_analysis(
 
 
 def create_target_unitary_event_analysis():
-    plot_params_user = {'events': {'Vision': [1000] * pq.ms,
-                                   'Action': [1500] * pq.ms}}
-
-    target = plot_unitary_events(
-        spiketrains, joint_surprise_dict=UE, significance_level=0.05,
-        binsize=5 * pq.ms, window_size=100 * pq.ms, window_step=10 * pq.ms,
-        n_neurons=2, **plot_params_user)
-    plt.savefig(PLOT_UE_TARGET_PATH)
-    plt.show(target)
+    with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as f:
+        plot_params_user = {'events': {'Vision': [1000] * pq.ms,
+                            'Action': [1500] * pq.ms}}
+        plot_unitary_events(
+            spiketrains, joint_surprise_dict=UE, significance_level=0.05,
+            binsize=5 * pq.ms, window_size=100 * pq.ms, window_step=10 * pq.ms,
+            n_neurons=2, **plot_params_user)
+        plt.savefig(f.name, format="png")
+        plt.show()
+        print("f.name target: ", f.name)
+        return f.name
 
 
 if __name__ == '__main__':

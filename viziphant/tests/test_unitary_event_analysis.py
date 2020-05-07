@@ -7,10 +7,11 @@ import matplotlib.pyplot as plt
 import neo
 import numpy as np
 import quantities as pq
+import os
 
 import elephant.unitary_event_analysis as ue
 from viziphant.tests.create_target.target_unitary_event_analysis import \
-    PLOT_UE_TARGET_PATH, create_target_unitary_event_analysis
+    create_target_unitary_event_analysis
 from viziphant.tests.utils.utils import TEST_DATA_DIR
 from viziphant.tests.utils.utils import images_difference, check_integrity
 from viziphant.unitary_event_analysis import plot_unitary_events
@@ -47,13 +48,23 @@ class UETestCase(unittest.TestCase):
 
     def test_plot_UE(self):
         # Create target ;; TODO: once the target is fix/final, remove this
-        # create_target_unitary_event_analysis()
+        target_path = create_target_unitary_event_analysis()
+        print("target_path: ", target_path)
+        print("exists: ", os.path.exists(target_path),
+              "size: ", os.path.getsize(target_path))
 
         with tempfile.NamedTemporaryFile(suffix=".png") as f:
             self._do_plot_UE()
             plt.savefig(f.name, format="png")
             plt.show()
-            diff_norm = images_difference(str(PLOT_UE_TARGET_PATH), f.name)
+            diff_norm = images_difference(target_path, f.name)
+
+
+            # remove the target-tempfile
+            if os.path.exists(target_path):
+                os.remove(target_path)
+            else:
+                print("File does not exist.")
         # TODO: which tolerance-value is sensitive enough to detect all
         #  interesting differences? (1e-10 seems better than 1e-2), unless some
         #  small changes in the spiketrain-data (e.g. shift of one particular
