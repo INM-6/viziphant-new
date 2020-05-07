@@ -49,16 +49,12 @@ class UETestCase(unittest.TestCase):
     def test_plot_UE(self):
         # Create target ;; TODO: once the target is fix/final, remove this
         target_path = create_target_unitary_event_analysis()
-        print("target_path: ", target_path)
-        print("exists: ", os.path.exists(target_path),
-              "size: ", os.path.getsize(target_path))
 
         with tempfile.NamedTemporaryFile(suffix=".png") as f:
             self._do_plot_UE()
             plt.savefig(f.name, format="png")
             plt.show()
             diff_norm = images_difference(target_path, f.name)
-
 
             # remove the target-tempfile
             if os.path.exists(target_path):

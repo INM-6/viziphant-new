@@ -42,7 +42,6 @@ def create_target_unitary_event_analysis():
             n_neurons=2, **plot_params_user)
         plt.savefig(f.name, format="png")
         plt.show()
-        print("f.name target: ", f.name)
         return f.name
 
 
