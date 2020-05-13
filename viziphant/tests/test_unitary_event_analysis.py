@@ -1,3 +1,4 @@
+import io
 import tempfile
 import unittest
 from pathlib import Path
@@ -50,22 +51,12 @@ class UETestCase(unittest.TestCase):
         # Create target ;; TODO: once the target is fix/final, remove this
         target_path = create_target_unitary_event_analysis()
 
-        with tempfile.NamedTemporaryFile(suffix=".png") as f:
+        with io.BytesIO() as buf:
             self._do_plot_UE()
-            plt.savefig(f.name, format="png")
+            plt.savefig(buf, format="png")
             plt.show()
-            diff_norm = images_difference(target_path, f.name)
-
-            # remove the target-tempfile
-            if os.path.exists(target_path):
-                os.remove(target_path)
-            else:
-                print("File does not exist.")
-        # TODO: which tolerance-value is sensitive enough to detect all
-        #  interesting differences? (1e-10 seems better than 1e-2), unless some
-        #  small changes in the spiketrain-data (e.g. shift of one particular
-        #  spike-dot in time of +- 0.5 ms) could remain undetected,
-        #  this depends on the chosen image/figure size of target and result
+            buf.seek(0)
+            diff_norm = images_difference(target_path, buf)
         tolerance = 3e-2
         self.assertLessEqual(diff_norm, tolerance)
 
