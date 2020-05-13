@@ -1,4 +1,3 @@
-import io
 import tempfile
 import unittest
 from pathlib import Path
@@ -8,18 +7,15 @@ import matplotlib.pyplot as plt
 import neo
 import numpy as np
 import quantities as pq
-import os
 
 import elephant.unitary_event_analysis as ue
-from viziphant.tests.create_target.target_unitary_event_analysis import \
-    create_target_unitary_event_analysis
-from viziphant.tests.utils.utils import TEST_DATA_DIR
+from viziphant.tests.utils.utils import TEST_DATA_DIR, TARGET_IMAGES_DIR
 from viziphant.tests.utils.utils import images_difference, check_integrity
 from viziphant.unitary_event_analysis import plot_unitary_events
 
 UE_DATASET_URL = "https://web.gin.g-node.org/INM-6/elephant-data/raw/master/" \
                  "dataset-1/dataset-1.h5"
-
+PLOT_UE_TARGET_PATH = TARGET_IMAGES_DIR / "target_plot_UE.png"
 
 class UETestCase(unittest.TestCase):
     @classmethod
@@ -39,25 +35,36 @@ class UETestCase(unittest.TestCase):
             cls.spiketrains, binsize=5 * pq.ms, winsize=100 * pq.ms,
             winstep=10 * pq.ms, pattern_hash=[3])
 
-    def _do_plot_UE(self):
+        # TODO: check if those parameters are needed
+        # parameters
+        cls.significance_level = 0.05
+        cls.bin_size = 5 * pq.ms
+        cls.window_size = 100 * pq.ms
+        cls.window_step = 10 * pq.ms
+        cls.n_neurons = 2
+        cls.plot_params_user = {'events': {'VisionY': [1000] * pq.ms,
+                                           'Action': [1500] * pq.ms}}
+
+    def _do_plot_UE(self, plot_path):
         plot_params_user = {'events': {'Vision': [1000] * pq.ms,
-                                       'Action': [1500] * pq.ms}}
+                                       'ActionY': [1500] * pq.ms}}
         plot_unitary_events(self.spiketrains, joint_surprise_dict=self.UE,
                             significance_level=0.05, binsize=5 * pq.ms,
                             window_size=100 * pq.ms, window_step=10 * pq.ms,
                             n_neurons=2, **plot_params_user)
+        plt.savefig(plot_path, format="png")
+        plt.show()
 
     def test_plot_UE(self):
-        # Create target ;; TODO: once the target is fix/final, remove this
-        target_path = create_target_unitary_event_analysis()
+        # TODO: fix UE target plot once uploaded
+        self._do_plot_UE(PLOT_UE_TARGET_PATH)
 
-        with io.BytesIO() as buf:
-            self._do_plot_UE()
-            plt.savefig(buf, format="png")
-            plt.show()
-            buf.seek(0)
-            diff_norm = images_difference(target_path, buf)
+        with tempfile.NamedTemporaryFile() as f:
+            self._do_plot_UE(plot_path=f)
+            f.seek(0)
+            diff_norm = images_difference(str(PLOT_UE_TARGET_PATH), f.name)
         tolerance = 3e-2
+        print("diff_norm: ")
         self.assertLessEqual(diff_norm, tolerance)
 
 
