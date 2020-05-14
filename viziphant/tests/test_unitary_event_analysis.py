@@ -35,19 +35,9 @@ class UETestCase(unittest.TestCase):
             cls.spiketrains, binsize=5 * pq.ms, winsize=100 * pq.ms,
             winstep=10 * pq.ms, pattern_hash=[3])
 
-        # TODO: check if those parameters are needed
-        # parameters
-        cls.significance_level = 0.05
-        cls.bin_size = 5 * pq.ms
-        cls.window_size = 100 * pq.ms
-        cls.window_step = 10 * pq.ms
-        cls.n_neurons = 2
-        cls.plot_params_user = {'events': {'VisionY': [1000] * pq.ms,
-                                           'Action': [1500] * pq.ms}}
-
     def _do_plot_UE(self, plot_path):
         plot_params_user = {'events': {'Vision': [1000] * pq.ms,
-                                       'ActionY': [1500] * pq.ms}}
+                                       'Action': [1500] * pq.ms}}
         plot_unitary_events(self.spiketrains, joint_surprise_dict=self.UE,
                             significance_level=0.05, binsize=5 * pq.ms,
                             window_size=100 * pq.ms, window_step=10 * pq.ms,
@@ -64,7 +54,6 @@ class UETestCase(unittest.TestCase):
             f.seek(0)
             diff_norm = images_difference(str(PLOT_UE_TARGET_PATH), f.name)
         tolerance = 3e-2
-        print("diff_norm: ")
         self.assertLessEqual(diff_norm, tolerance)
 
 
