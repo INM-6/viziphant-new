@@ -35,7 +35,7 @@ class UETestCase(unittest.TestCase):
             cls.spiketrains, binsize=5 * pq.ms, winsize=100 * pq.ms,
             winstep=10 * pq.ms, pattern_hash=[3])
 
-    def _do_plot_UE(self, plot_path):
+    def _do_plot_unitary_events(self, plot_path):
         plot_params_user = {'events': {'Vision': [1000] * pq.ms,
                                        'Action': [1500] * pq.ms}}
         plot_unitary_events(self.spiketrains, joint_surprise_dict=self.UE,
@@ -45,12 +45,12 @@ class UETestCase(unittest.TestCase):
         plt.savefig(plot_path, format="png")
         plt.show()
 
-    def test_plot_UE(self):
+    def test_plot_unitary_events(self):
         # TODO: fix UE target plot once uploaded
-        self._do_plot_UE(PLOT_UE_TARGET_PATH)
+        self._do_plot_unitary_events(PLOT_UE_TARGET_PATH)
 
         with tempfile.NamedTemporaryFile() as f:
-            self._do_plot_UE(plot_path=f)
+            self._do_plot_unitary_events(plot_path=f)
             f.seek(0)
             diff_norm = images_difference(str(PLOT_UE_TARGET_PATH), f.name)
         tolerance = 3e-2

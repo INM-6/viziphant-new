@@ -333,8 +333,9 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
     axis5.text(t_winpos[30], -joint_surprise_significance - 0.9, '$\\alpha -$',
                color='g')
     axis5.xaxis.set_major_locator(MaxNLocator(integer=True))
-    axis5.set_yticks([ue.jointJ(1-significance_level), ue.jointJ(0.5), ue.jointJ(0.01)])
-    axis5.set_yticklabels([1-significance_level, 0.5, 0.01])
+    axis5.set_yticks([ue.jointJ(1-significance_level), ue.jointJ(0.5),
+                      ue.jointJ(significance_level)])
+    axis5.set_yticklabels([1-significance_level, 0.5, significance_level])
 
     print('plotting Unitary Events ...')
     axis6 = plt.subplot(6, 1, 6, sharex=axis1)
