@@ -84,7 +84,7 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
             The average firing rate of each neuron.
     significance_level : float
         The significance threshold used to determine which coincident events
-        are classified ad unitary events within a window.
+        are classified as unitary events within a window.
     binsize : quantities.Quantity
         The size of bins for discretizing spike trains. This value should be
         identical to the one used to generate joint_surprise_dict.
@@ -157,12 +157,8 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
     center_of_analysis_window = t_winpos + window_size / 2.
     n_trials = len(data)
     joint_surprise_significance = ue.jointJ(significance_level)
-    # print("min: ", min(t_winpos),
-    #       "max: ", max(t_winpos))
     xlim_left = (min(t_winpos)).magnitude
     xlim_right = (max(t_winpos) + window_size).magnitude
-    # print("xlim_left: ", xlim_left,
-    #       "xlim_right: ", xlim_right)
 
     if len(params_dict['unit_real_ids']) != n_neurons:
         raise ValueError(
@@ -181,25 +177,25 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
     # set y-axis for raster plots with ticks and labels
     y_tick_interval = params_dict['y_tick_interval']
     y_ticks_list = []
-    # find start y-tick position for each trail
-    for yt1 in range(1, n_neurons * n_trials, n_trials + 1):
-        y_ticks_list.append(yt1)
+    # find start y-tick position for each neuron trail-set
+    y_ticks_list.extend(range(1, n_neurons * n_trials, n_trials + 1))
     # find in-between y-tick position for each trail with the specific interval
     for n in range(n_neurons):
-        for yt2 in range(n * (n_trials + 1) + y_tick_interval,
-                         (n + 1) * n_trials, y_tick_interval):
-            y_ticks_list.append(yt2)
+        in_between_ytick_position = range(n * (n_trials + 1) + y_tick_interval,
+                                          (n + 1) * n_trials, y_tick_interval)
+        y_ticks_list.extend(in_between_ytick_position)
     y_ticks_list.sort()
+
     y_ticks_labels_list = [1]
     number_of_in_between_y_ticks_per_neuron = math.floor(
         n_trials / y_tick_interval)
-    for i in range(number_of_in_between_y_ticks_per_neuron):
-        y_ticks_labels_list.append((i + 1) * y_tick_interval)
-    auxiliary_list = y_ticks_labels_list
+    y_ticks_labels_list = \
+        np.r_[1, np.arange(1, number_of_in_between_y_ticks_per_neuron + 1)
+              * y_tick_interval]
+
     # adding n_neuron times the y_ticks_labels_list to itself, so that each
     # neuron has the same y_ticks_labels
-    for i in range(n_neurons - 1):
-        y_ticks_labels_list += auxiliary_list
+    y_ticks_labels_list = np.tile(y_ticks_labels_list, n_neurons)
 
     def mark_epochs(axes_name):
         """
@@ -212,12 +208,12 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
             The axis on which the epochs will be marked.
         """
         for key in params_dict['events'].keys():
-            for e_val in params_dict['events'][key]:
-                axes_name.axvline(e_val, ls='-', lw=params_dict['lw'],
-                                  color='r')
+            for event_timepoint in params_dict['events'][key]:
+                axes_name.axvline(event_timepoint, ls='-',
+                                  lw=params_dict['lw'], color='r')
                 if axes_name.get_geometry()[2] == 6:
-                    axes_name.text(x=e_val-10*pq.ms, y=-90, s=key, fontsize=12,
-                                   color='b')
+                    axes_name.text(x=event_timepoint-10*pq.ms, y=-90, s=key,
+                                   fontsize=12, color='b')
 
     print('plotting Unitary Event Analysis ...')
 
@@ -228,7 +224,7 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
         for trial, data_trial in enumerate(data):
             spike_events_on_timescale = data_trial[n].magnitude
             spike_events_on_trialscale = \
-                np.ones_like(data_trial[n].magnitude) * trial + \
+                np.full_like(data_trial[n].magnitude, trial) + \
                 n * (n_trials + 1) + 1
             axis1.plot(spike_events_on_timescale, spike_events_on_trialscale,
                        ls='none', marker='.', color='k', markersize=0.5)
@@ -260,7 +256,8 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
         if max(joint_surprise_dict['rate_avg'][:, n]) > max_val_psth:
             max_val_psth = max(joint_surprise_dict['rate_avg'][:, n])
     axis2.set_xlim(xlim_left, xlim_right)
-    max_val_psth = max_val_psth.rescale(params_dict['frequency_unit']).magnitude
+    max_val_psth = max_val_psth.rescale(
+        params_dict['frequency_unit']).magnitude
     axis2.set_ylim(0, max_val_psth + max_val_psth/10)
     axis2.xaxis.set_major_locator(MaxNLocator(integer=True))
     axis2.set_yticks([0, int(max_val_psth / 2), int(max_val_psth)])
@@ -275,16 +272,16 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
         for trial, data_trial in enumerate(data):
             spike_events_on_timescale = data_trial[n].magnitude
             spike_events_on_trialscale = \
-                np.ones_like(data_trial[n].magnitude) * trial + \
+                np.full_like(data_trial[n].magnitude, trial) + \
                 n * (n_trials + 1) + 1
             axis3.plot(spike_events_on_timescale, spike_events_on_trialscale,
                        ls='none', marker='.', color='k', markersize=0.5)
+            indices_of_coincidence_events = \
+                np.unique(joint_surprise_dict['indices']['trial' + str(trial)])
             coincidence_events_on_timescale = \
-                np.unique(joint_surprise_dict['indices']
-                          ['trial' + str(trial)]) * binsize
-            coincidence_events_on_trialscale = \
-                np.ones_like(np.unique(joint_surprise_dict['indices'][
-                    'trial' + str(trial)])) * trial + n * (n_trials + 1) + 1
+                indices_of_coincidence_events * binsize
+            coincidence_events_on_trialscale = np.full_like(
+                indices_of_coincidence_events, trial) + n * (n_trials + 1) + 1
             axis3.plot(coincidence_events_on_timescale,
                        coincidence_events_on_trialscale, ls='',
                        markersize=params_dict['marker_size'], marker='s',
@@ -303,9 +300,9 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
     axis4 = plt.subplot(6, 1, 4, sharex=axis1)
     axis4.set_title('Coincidence Rates')
     empirical_coincidence_rate = joint_surprise_dict['n_emp'] / \
-                                 (window_size.rescale('s').magnitude * n_trials)
+        (window_size.rescale('s').magnitude * n_trials)
     expected_coincidence_rate = joint_surprise_dict['n_exp'] / \
-                                (window_size.rescale('s').magnitude * n_trials)
+        (window_size.rescale('s').magnitude * n_trials)
     axis4.plot(center_of_analysis_window, empirical_coincidence_rate,
                label='empirical', lw=params_dict['lw'], color='c')
     axis4.plot(center_of_analysis_window, expected_coincidence_rate,
@@ -344,18 +341,18 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
         for trial, data_trial in enumerate(data):
             spike_events_on_timescale = data_trial[n].magnitude
             spike_events_on_trialscale = \
-                np.ones_like(data_trial[n].magnitude) * trial + \
+                np.full_like(data_trial[n].magnitude, trial) + \
                 n * (n_trials + 1) + 1
             axis6.plot(spike_events_on_timescale, spike_events_on_trialscale,
                        ls='None', marker='.', markersize=0.5, color='k')
-            indices_of_significant_JointSurprises = np.where(
+            indices_of_significant_joint_surprises = np.where(
                 joint_surprise_dict['Js'] >= joint_surprise_significance)[0]
-            if len(indices_of_significant_JointSurprises) > 0:
+            if len(indices_of_significant_joint_surprises) > 0:
                 indices_of_coincidence_events = np.unique(
                     joint_surprise_dict['indices']['trial' + str(trial)])
                 if len(indices_of_coincidence_events) > 0:
                     indices_of_unitary_events = []
-                    for j in indices_of_significant_JointSurprises:
+                    for j in indices_of_significant_joint_surprises:
                         coincidence_indices_greater_left_window_margin = \
                             indices_of_coincidence_events * binsize >= \
                             t_winpos[j]

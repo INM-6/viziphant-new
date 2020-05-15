@@ -17,6 +17,7 @@ UE_DATASET_URL = "https://web.gin.g-node.org/INM-6/elephant-data/raw/master/" \
                  "dataset-1/dataset-1.h5"
 PLOT_UE_TARGET_PATH = TARGET_IMAGES_DIR / "target_plot_UE.png"
 
+
 class UETestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -43,7 +44,6 @@ class UETestCase(unittest.TestCase):
                             window_size=100 * pq.ms, window_step=10 * pq.ms,
                             n_neurons=2, **plot_params_user)
         plt.savefig(plot_path, format="png")
-        plt.show()
 
     def test_plot_unitary_events(self):
         # TODO: fix UE target plot once uploaded
