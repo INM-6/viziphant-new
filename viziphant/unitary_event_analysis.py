@@ -212,7 +212,8 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
                 axes_name.axvline(event_timepoint, ls='-',
                                   lw=params_dict['lw'], color='r')
                 if axes_name.get_geometry()[2] == 6:
-                    axes_name.text(x=event_timepoint-10*pq.ms, y=-90, s=key,
+                    axes_name.text(x=event_timepoint-10*pq.ms,
+                                   y=params_dict['S_ylim'][0]-35, s=key,
                                    fontsize=12, color='b')
 
     print('plotting Unitary Event Analysis ...')
@@ -236,7 +237,7 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
     axes1.xaxis.set_major_locator(MaxNLocator(integer=True))
     axes1.set_yticks(y_ticks_list)
     axes1.set_yticklabels(y_ticks_labels_list, fontsize=params_dict['fsize'])
-    axes1.text(xlim_right - 200, -50,
+    axes1.text(xlim_right - 200, -24,
                f"Unit {params_dict['unit_real_ids'][0]}")
     axes1.text(xlim_right - 200, n_trials * n_neurons + 7,
                f"Unit {params_dict['unit_real_ids'][1]}")
@@ -265,9 +266,9 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
     axes2.set_ylabel(f"({params_dict['frequency_unit']})",
                      fontsize=params_dict['fsize'])
 
-    print('plotting Coincidence Events ...')
+    print('plotting Coincident Events ...')
     axes3 = plt.subplot(6, 1, 3, sharex=axes1)
-    axes3.set_title('Coincidence Events')
+    axes3.set_title('Coincident Events')
     for n in range(n_neurons):
         for trial, data_trial in enumerate(data):
             spike_events_on_timescale = data_trial[n].magnitude
@@ -304,9 +305,9 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
     expected_coincidence_rate = joint_surprise_dict['n_exp'] / \
         (window_size.rescale('s').magnitude * n_trials)
     axes4.plot(center_of_analysis_window, empirical_coincidence_rate,
-               label='empirical', lw=params_dict['lw'], color='c')
+               label='Empirical', lw=params_dict['lw'], color='c')
     axes4.plot(center_of_analysis_window, expected_coincidence_rate,
-               label='expected', lw=params_dict['lw'], color='m')
+               label='Expected', lw=params_dict['lw'], color='m')
     axes4.set_xlim(xlim_left, xlim_right)
     axes4.xaxis.set_major_locator(MaxNLocator(integer=True))
     y_ticks = axes4.get_ylim()
