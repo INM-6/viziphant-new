@@ -20,7 +20,7 @@ params_dict_default = {
     # epochs to be marked on the time axis
     'events': {},
     # size of the figure
-    'figsize': (12, 10),
+    'figsize': (10, 12),
     # id of the units
     'unit_ids': [0, 1],
     # horizontal white space between subplots
@@ -28,10 +28,10 @@ params_dict_default = {
     # width white space between subplots
     'wspace': 0.5,
     # orientation (figure margins)
-    'top': 0.95,
+    'top': 0.9,
     'bottom': 0.1,
-    'right': 0.92,
-    'left': 0.08,
+    'right': 0.9,
+    'left': 0.1,
     # font size
     'fsize': 12,
     # the actual unit ids from the experimental recording
@@ -209,12 +209,15 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
         """
         for key in params_dict['events'].keys():
             for event_timepoint in params_dict['events'][key]:
-                axes_name.axvline(event_timepoint, ls='-',
-                                  lw=params_dict['lw'], color='r')
-                if axes_name.get_geometry()[2] == 6:
-                    axes_name.text(x=event_timepoint-10*pq.ms,
-                                   y=-38, s=key,
-                                   fontsize=12, color='b')
+                # check if epochs are between time-axis limits
+                if ((xlim_left <= event_timepoint) and
+                        (event_timepoint <= xlim_right)):
+                    axes_name.axvline(event_timepoint, ls='-',
+                                      lw=params_dict['lw'], color='r')
+                    if axes_name.get_geometry()[2] == 6:
+                        axes_name.text(x=event_timepoint-10*pq.ms,
+                                       y=-54, s=key,
+                                       fontsize=12, color='r')
 
     print('plotting Unitary Event Analysis ...')
 
@@ -237,7 +240,7 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
     axes1.xaxis.set_major_locator(MaxNLocator(integer=True))
     axes1.set_yticks(y_ticks_list)
     axes1.set_yticklabels(y_ticks_labels_list, fontsize=params_dict['fsize'])
-    axes1.text(xlim_right - 200, -24,
+    axes1.text(xlim_right - 200, -34,
                f"Unit {params_dict['unit_real_ids'][0]}")
     axes1.text(xlim_right - 200, n_trials * n_neurons + 7,
                f"Unit {params_dict['unit_real_ids'][1]}")
@@ -387,7 +390,8 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
     axes6.xaxis.set_major_locator(MaxNLocator(integer=True))
     axes6.set_yticks(y_ticks_list)
     axes6.set_yticklabels(y_ticks_labels_list, fontsize=params_dict['fsize'])
-    axes6.set_xlabel('Time (ms)', fontsize=params_dict['fsize'])
+    axes6.set_xlabel(f'Time ({params_dict["time_unit"]})',
+                     fontsize=params_dict['fsize'])
     axes6.set_ylabel('Trial', fontsize=params_dict['fsize'])
 
     # mark all epochs on all subplots and annotate all axes-subplots
