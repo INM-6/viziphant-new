@@ -22,7 +22,7 @@ params_dict_default = {
     # size of the figure
     'figsize': (10, 12),
     # id of the units
-    'unit_ids': [0, 1],
+    'unit_ids': [1, 2],
     # horizontal white space between subplots
     'hspace': 1,
     # width white space between subplots
@@ -42,8 +42,6 @@ params_dict_default = {
     'S_ylim': (-3, 3),
     # size of the marker
     'marker_size': 5,
-    # size of the y-ticks interval for rasterplots
-    'y_tick_interval': 15,
     # uniform time unit
     'time_unit': 'ms',
     # uniform frequency unit
@@ -103,29 +101,27 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
             Epochs to be marked on the time axis
             key: epochs name as string
             value: list of quantities.Quantity
-        figsize : tuple of int (default: (12, 10))
+        figsize : tuple of int (default: (10, 12))
             The dimensions for the figure size.
         hspace : float (default: 1)
             The amount of height reserved for white space between subplots.
         wspace : float (default: 0.5)
             The amount of width reserved for white space between subplots.
-        top : float (default: 0.95)
+        top : float (default: 0.9)
         bottom : float (default: 0.1)
-        right : float (default: 0.87)
-        left : float (default: 0.08)
+        right : float (default: 0.9)
+        left : float (default: 0.1)
             The sizes of the respective margin of the subplot in the figure.
         fsize : integer (default: 12)
             The size of the font
         unit_real_ids : list of integers (default: [1, 2])
             The unit ids form the experimental recording.
-        lw: float (default: 0.5)
+        lw: float (default: 2)
             The default line width.
         S_ylim : tuple of ints or floats (default: (-3, 3))
             The y-axis limits for the joint surprise plot.
         marker_size : integers (default: 5)
             The marker size for the coincidence and unitary events.
-        y_tick_interval : integers (default: 15)
-            The size of the interval between y-ticks (for rasterplots only)
         time_unit : string (default: 'ms')
             The time unit used to rescale the spiketrains.
         frequency_unit : string (default: 'Hz')
@@ -149,7 +145,7 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
         for n in range(len(data[0])):
             data[m][n] = data[m][n].rescale(params_dict['time_unit'])
 
-    # # set common variables
+    # set common variables
     n_neurons = len(data[0])
     t_start = data[0][0].t_start
     t_stop = data[0][0].t_stop
@@ -175,27 +171,8 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
                         right=params_dict['right'])
 
     # set y-axis for raster plots with ticks and labels
-    y_tick_interval = params_dict['y_tick_interval']
-    y_ticks_list = []
-    # find start y-tick position for each neuron trail-set
-    y_ticks_list.extend(range(1, n_neurons * n_trials, n_trials + 1))
-    # find in-between y-tick position for each trail with the specific interval
-    for n in range(n_neurons):
-        in_between_ytick_position = range(n * (n_trials + 1) + y_tick_interval,
-                                          (n + 1) * n_trials, y_tick_interval)
-        y_ticks_list.extend(in_between_ytick_position)
-    y_ticks_list.sort()
-
-    y_ticks_labels_list = [1]
-    number_of_in_between_y_ticks_per_neuron = math.floor(
-        n_trials / y_tick_interval)
-    y_ticks_labels_list = \
-        np.r_[1, np.arange(1, number_of_in_between_y_ticks_per_neuron + 1)
-              * y_tick_interval]
-
-    # adding n_neuron times the y_ticks_labels_list to itself, so that each
-    # neuron has the same y_ticks_labels
-    y_ticks_labels_list = np.tile(y_ticks_labels_list, n_neurons)
+    y_ticks_list = [n_trials, n_neurons * n_trials + 1]
+    y_ticks_labels_list = [n_trials, n_trials]
 
     def mark_epochs(axes_name):
         """
@@ -232,14 +209,12 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
                 n * (n_trials + 1) + 1
             axes1.plot(spike_events_on_timescale, spike_events_on_trialscale,
                        ls='none', marker='.', color='k', markersize=0.5)
-        if n < n_neurons - 1:
-            axes1.axhline((trial + 2) * (n + 1), lw=params_dict['lw'],
-                          color='k')
+    axes1.axhline(n_trials + 1, lw=params_dict['lw'], color='k')
     axes1.set_xlim(xlim_left, xlim_right)
-    axes1.set_ylim(0, (trial + 2) * (n + 1) + 1)
+    axes1.set_ylim(0, (n_trials + 1) * n_neurons + 1)
     axes1.xaxis.set_major_locator(MaxNLocator(integer=True))
     axes1.set_yticks(y_ticks_list)
-    axes1.set_yticklabels(y_ticks_labels_list, fontsize=params_dict['fsize'])
+    axes1.set_yticklabels(y_ticks_labels_list)
     axes1.text(xlim_right - 200, -34,
                f"Unit {params_dict['unit_real_ids'][0]}")
     axes1.text(xlim_right - 200, n_trials * n_neurons + 7,
@@ -290,14 +265,12 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
                        coincidence_events_on_trialscale, ls='',
                        markersize=params_dict['marker_size'], marker='s',
                        markerfacecolor='none', markeredgecolor='c')
-        if n < n_neurons - 1:
-            axes3.axhline((trial + 2) * (n + 1), lw=params_dict['lw'],
-                          color='k')
+    axes3.axhline(n_trials + 1, lw=params_dict['lw'], color='k')
     axes3.set_xlim(xlim_left, xlim_right)
-    axes3.set_ylim(0, (trial + 2) * (n + 1) + 1)
+    axes3.set_ylim(0, (n_trials + 1) * n_neurons + 1)
     axes3.xaxis.set_major_locator(MaxNLocator(integer=True))
     axes3.set_yticks(y_ticks_list)
-    axes3.set_yticklabels(y_ticks_labels_list, fontsize=params_dict['fsize'])
+    axes3.set_yticklabels(y_ticks_labels_list)
     axes3.set_ylabel('Trial', fontsize=params_dict['fsize'])
 
     print('plotting Coincidence Rates ..')
@@ -382,14 +355,12 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
                                markersize=params_dict['marker_size'],
                                marker='s', ls='', markerfacecolor='none',
                                markeredgecolor='r')
-        if n < n_neurons - 1:
-            axes6.axhline((trial + 2) * (n + 1), lw=params_dict['lw'],
-                          color='k')
+    axes6.axhline(n_trials + 1, lw=params_dict['lw'], color='k')
     axes6.set_xlim(xlim_left, xlim_right)
-    axes6.set_ylim(0, (trial + 2) * (n + 1) + 1)
+    axes6.set_ylim(0, (n_trials + 1) * n_neurons + 1)
     axes6.xaxis.set_major_locator(MaxNLocator(integer=True))
     axes6.set_yticks(y_ticks_list)
-    axes6.set_yticklabels(y_ticks_labels_list, fontsize=params_dict['fsize'])
+    axes6.set_yticklabels(y_ticks_labels_list)
     axes6.set_xlabel(f'Time ({params_dict["time_unit"]})',
                      fontsize=params_dict['fsize'])
     axes6.set_ylabel('Trial', fontsize=params_dict['fsize'])
