@@ -192,9 +192,9 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
                     axes_name.axvline(event_timepoint, ls='-',
                                       lw=params_dict['lw'], color='r')
                     if axes_name.get_geometry()[2] == 6:
-                        axes_name.text(x=event_timepoint-10*pq.ms,
-                                       y=-54, s=key,
-                                       fontsize=12, color='r')
+                        axes_name.text(x=event_timepoint, y=-54, s=key,
+                                       fontsize=12, color='r',
+                                       horizontalalignment='center')
 
     print('plotting Unitary Event Analysis ...')
 
