@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn
@@ -9,11 +7,9 @@ import elephant.spike_train_correlation as stcorr
 from elephant.conversion import BinnedSpikeTrain
 from elephant.spike_train_generation import homogeneous_poisson_process
 from viziphant.spike_train_correlation import plot_corrcoef
+from viziphant.tests.utils.utils import TARGET_IMAGES_DIR
 
-TARGET_IMAGES_DIR = Path(__file__).parent.parent / "target_images"
 CORRCOEF_TARGET_PATH = TARGET_IMAGES_DIR / "plot_correlation_coefficient.png"
-
-TARGET_IMAGES_DIR.mkdir(exist_ok=True)
 
 
 def get_default_corrcoef_matrix():
