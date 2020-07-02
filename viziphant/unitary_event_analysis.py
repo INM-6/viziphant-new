@@ -215,12 +215,12 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
     axes1.xaxis.set_major_locator(MaxNLocator(integer=True))
     axes1.set_yticks(y_ticks_list)
     axes1.set_yticklabels(y_ticks_labels_list)
-    axes1.text(1.0, 1.0, f"Unit {params_dict['unit_real_ids'][0]}",
+    axes1.text(1.0, 1.0, f"Unit {params_dict['unit_real_ids'][1]}",
                fontsize=params_dict['fsize']//2,
                horizontalalignment='right',
                verticalalignment='bottom',
                transform=axes1.transAxes)
-    axes1.text(1.0, 0, f"Unit {params_dict['unit_real_ids'][1]}",
+    axes1.text(1.0, 0, f"Unit {params_dict['unit_real_ids'][0]}",
                fontsize=params_dict['fsize']//2,
                horizontalalignment='right',
                verticalalignment='top',
