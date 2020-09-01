@@ -8,7 +8,7 @@ from collections import namedtuple
 import matplotlib.pyplot as plt
 import numpy as np
 import quantities as pq
-from matplotlib.ticker import (MaxNLocator)
+from matplotlib.ticker import MaxNLocator, FormatStrFormatter
 
 import elephant.unitary_event_analysis as ue
 
@@ -43,7 +43,7 @@ params_dict_default = {
     # size of the marker
     'marker_size': 5,
     # uniform time unit
-    'time_unit': 'ms',
+    'time_unit': pq.ms,
     # uniform frequency unit
     'frequency_unit': 'Hz',
 }
@@ -122,7 +122,7 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
             The y-axis limits for the joint surprise plot.
         marker_size : integers (default: 5)
             The marker size for the coincidence and unitary events.
-        time_unit : string (default: 'ms')
+        time_unit : quantities (default: quantities.ms)
             The time unit used to rescale the spiketrains.
         frequency_unit : string (default: 'Hz')
             The frequency unit used to rescale the spikerates.
@@ -171,8 +171,8 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
                         right=params_dict['right'])
 
     # set y-axis for raster plots with ticks and labels
-    y_ticks_list = [n_trials, n_neurons * n_trials + 1]
-    y_ticks_labels_list = [n_trials, n_trials]
+    y_ticks_list = [1, n_trials, n_neurons * n_trials + 1]
+    y_ticks_labels_list = [1, n_trials, n_trials]
 
     def mark_epochs(axes_name):
         """
@@ -209,7 +209,7 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
                 n * (n_trials + 1) + 1
             axes1.plot(spike_events_on_timescale, spike_events_on_trialscale,
                        ls='none', marker='.', color='k', markersize=0.5)
-    axes1.axhline(n_trials + 1, lw=params_dict['lw'], color='k')
+    axes1.axhline(n_trials + 1, lw=0.5, color='k')
     axes1.set_xlim(xlim_left, xlim_right)
     axes1.set_ylim(0, (n_trials + 1) * n_neurons + 1)
     axes1.xaxis.set_major_locator(MaxNLocator(integer=True))
@@ -265,7 +265,7 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
                        coincidence_events_on_trialscale, ls='',
                        markersize=params_dict['marker_size'], marker='s',
                        markerfacecolor='none', markeredgecolor='c')
-    axes3.axhline(n_trials + 1, lw=params_dict['lw'], color='k')
+    axes3.axhline(n_trials + 1, lw=0.5, color='k')
     axes3.set_xlim(xlim_left, xlim_right)
     axes3.set_ylim(0, (n_trials + 1) * n_neurons + 1)
     axes3.xaxis.set_major_locator(MaxNLocator(integer=True))
@@ -287,7 +287,8 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
     axes4.set_xlim(xlim_left, xlim_right)
     axes4.xaxis.set_major_locator(MaxNLocator(integer=True))
     y_ticks = axes4.get_ylim()
-    axes4.set_yticks([0, y_ticks[1] / 2, y_ticks[1]])
+    axes4.set_yticks([y_ticks[0], y_ticks[1] / 2, y_ticks[1]])
+    axes4.yaxis.set_major_formatter(FormatStrFormatter('%.1f'))
     axes4.legend(fontsize=params_dict['fsize']//2)
     axes4.set_ylabel(f"({params_dict['frequency_unit']})",
                      fontsize=params_dict['fsize'])
@@ -355,17 +356,16 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
                                markersize=params_dict['marker_size'],
                                marker='s', ls='', markerfacecolor='none',
                                markeredgecolor='r')
-    axes6.axhline(n_trials + 1, lw=params_dict['lw'], color='k')
+    axes6.axhline(n_trials + 1, lw=0.5, color='k')
     axes6.set_xlim(xlim_left, xlim_right)
     axes6.set_ylim(0, (n_trials + 1) * n_neurons + 1)
     axes6.xaxis.set_major_locator(MaxNLocator(integer=True))
     axes6.set_yticks(y_ticks_list)
     axes6.set_yticklabels(y_ticks_labels_list)
-    axes6.set_xlabel(f'Time ({params_dict["time_unit"]})',
-                     fontsize=params_dict['fsize'])
     axes6.set_ylabel('Trial', fontsize=params_dict['fsize'])
 
-    # mark all epochs on all subplots and annotate all axes-subplots
+    # mark all epochs on all subplots and annotate all axes-subplots;;
+    # add to all subplots x-axis label
     for n in range(6):
         axes_list = [axes1, axes2, axes3, axes4, axes5, axes6]
         letter_list = ['A', 'B', 'C', 'D', 'E', 'F']
@@ -374,6 +374,8 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
         letter = letter_list[n]
         axes.text(-0.05, 1.1, letter, transform=axes.transAxes,
                   size=params_dict['fsize'] + 5, weight='bold')
+        axes.set_xlabel(f'Time ({params_dict["time_unit"].dimensionality})',
+                         fontsize=params_dict['fsize'])
 
     result = FigureUE(axes1, axes2, axes3, axes4, axes5, axes6)
     return result
