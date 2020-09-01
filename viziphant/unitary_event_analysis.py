@@ -1,8 +1,6 @@
 """
 Plotting function for unitary event analysis results.
 """
-import math
-import string
 from collections import namedtuple
 
 import matplotlib.pyplot as plt
@@ -171,8 +169,11 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
                         right=params_dict['right'])
 
     # set y-axis for raster plots with ticks and labels
-    y_ticks_list = [1, n_trials, n_neurons * n_trials + 1]
-    y_ticks_labels_list = [1, n_trials, n_trials]
+    y_ticks_list = [1]
+    y_ticks_labels_list = [1]
+    for n in range(n_neurons):
+        y_ticks_list.append((n + 1) * n_trials + n)
+        y_ticks_labels_list.append(n_trials)
 
     def mark_epochs(axes_name):
         """
@@ -209,7 +210,8 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
                 n * (n_trials + 1) + 1
             axes1.plot(spike_events_on_timescale, spike_events_on_trialscale,
                        ls='none', marker='.', color='k', markersize=0.5)
-    axes1.axhline(n_trials + 1, lw=0.5, color='k')
+        if n < n_neurons - 1:
+            axes1.axhline((trial + 2) * (n + 1), lw=0.5, color='k')
     axes1.set_xlim(xlim_left, xlim_right)
     axes1.set_ylim(0, (n_trials + 1) * n_neurons + 1)
     axes1.xaxis.set_major_locator(MaxNLocator(integer=True))
@@ -265,7 +267,8 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
                        coincidence_events_on_trialscale, ls='',
                        markersize=params_dict['marker_size'], marker='s',
                        markerfacecolor='none', markeredgecolor='c')
-    axes3.axhline(n_trials + 1, lw=0.5, color='k')
+        if n < n_neurons - 1:
+            axes3.axhline((trial + 2) * (n + 1), lw=0.5, color='k')
     axes3.set_xlim(xlim_left, xlim_right)
     axes3.set_ylim(0, (n_trials + 1) * n_neurons + 1)
     axes3.xaxis.set_major_locator(MaxNLocator(integer=True))
@@ -273,7 +276,7 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
     axes3.set_yticklabels(y_ticks_labels_list)
     axes3.set_ylabel('Trial', fontsize=params_dict['fsize'])
 
-    print('plotting Coincidence Rates ..')
+    print('plotting emp. and exp. Coincidence Rates ..')
     axes4 = plt.subplot(6, 1, 4, sharex=axes1)
     axes4.set_title('Coincidence Rates')
     empirical_coincidence_rate = joint_surprise_dict['n_emp'] / \
@@ -356,7 +359,8 @@ def plot_unitary_events(data, joint_surprise_dict, significance_level, binsize,
                                markersize=params_dict['marker_size'],
                                marker='s', ls='', markerfacecolor='none',
                                markeredgecolor='r')
-    axes6.axhline(n_trials + 1, lw=0.5, color='k')
+        if n < n_neurons - 1:
+            axes6.axhline((trial + 2) * (n + 1), lw=0.5, color='k')
     axes6.set_xlim(xlim_left, xlim_right)
     axes6.set_ylim(0, (n_trials + 1) * n_neurons + 1)
     axes6.xaxis.set_major_locator(MaxNLocator(integer=True))
